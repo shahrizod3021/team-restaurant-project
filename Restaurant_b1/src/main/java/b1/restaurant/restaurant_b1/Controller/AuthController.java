@@ -30,21 +30,22 @@ public class AuthController {
 
     @PostMapping("/login")
     public HttpEntity<?> login(@RequestBody ReqLogin request) {
-            authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getPhoneNumber(), request.getPassword())
         );
         User user = authRepository.findUserByPhoneNumber(request.getPhoneNumber()).get();
         ResToken resToken = new ResToken(generateToken(request.getPhoneNumber()));
-        if (user.getRole().getRoleName().equals(RoleName.USER)){
+        if (user.getRole().getRoleName().equals(RoleName.USER)) {
             return ResponseEntity.ok(getmalumot(user, resToken, "/foydalanuvchi"));
         }
+        System.out.println("salom git");
         return ResponseEntity.ok(getmalumot(user, resToken, "/auth/admin"));
     }
 
     @PostMapping("/register")
-    public HttpEntity<?> register(@RequestBody ReqRegister register){
+    public HttpEntity<?> register(@RequestBody ReqRegister register) {
         User user = authService.register(register);
-        if (user.getRole().getRoleName().equals(RoleName.USER)){
+        if (user.getRole().getRoleName().equals(RoleName.USER)) {
             return ResponseEntity.ok(new ApiResponse("/foydalanuvchi", true));
         }
         return ResponseEntity.ok(new ApiResponse("/auth/admin", true));
