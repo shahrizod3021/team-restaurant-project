@@ -30,4 +30,16 @@ public class CategoryController {
         ApiResponse apiResponse = categoryService.addCategory(reqCategory);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
     }
+
+    @PutMapping("/{id}")
+    public HttpEntity<?> editCategory(@PathVariable Integer id, @RequestBody ReqCategory reqCategory){
+        ApiResponse apiResponse = categoryService.editCategory(id, reqCategory);
+        return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpEntity<?> deleteCategory(@PathVariable Integer id){
+        ApiResponse apiResponse = categoryService.deleteCategory(id);
+        return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
+    }
 }
