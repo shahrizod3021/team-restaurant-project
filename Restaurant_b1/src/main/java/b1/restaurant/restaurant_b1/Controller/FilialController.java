@@ -42,7 +42,7 @@ public class FilialController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addRegion")
     public HttpEntity<?> addRegion(@RequestBody ReqRegion region){
         ApiResponse apiResponse = filialService.addRegion(region);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
@@ -61,8 +61,8 @@ public class FilialController {
     }
 
     @PutMapping("/region/{id}")
-    public HttpEntity<?> editRegion(@PathVariable Integer regid, @RequestBody ReqRegion region){
-        ApiResponse apiResponse = filialService.editRegion(regid, region);
+    public HttpEntity<?> editRegion(@PathVariable Integer id, @RequestBody ReqRegion region){
+        ApiResponse apiResponse = filialService.editRegion(id, region);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
     }
 
@@ -72,7 +72,7 @@ public class FilialController {
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
     }
 
-    @PostMapping
+    @PostMapping("/addDistrict")
     public HttpEntity<?> addDistrict(@RequestBody ReqDistrict reqDistrict){
         ApiResponse apiResponse = filialService.addDistrict(reqDistrict);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
