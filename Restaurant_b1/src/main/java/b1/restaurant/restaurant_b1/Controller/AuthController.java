@@ -6,15 +6,15 @@ import b1.restaurant.restaurant_b1.Payload.*;
 import b1.restaurant.restaurant_b1.Repository.AuthRepository;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
 import b1.restaurant.restaurant_b1.Service.AuthService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -49,6 +49,12 @@ public class AuthController {
             return ResponseEntity.ok(new ApiResponse("/foydalanuvchi", true));
         }
         return ResponseEntity.ok(new ApiResponse("/auth/admin", true));
+    }
+
+    @GetMapping("/{id}")
+    public HttpEntity<?> getOneUser(@PathVariable UUID id){
+        ResUser oneUser = authService.getOneUser(id);
+        return ResponseEntity.ok(oneUser);
     }
 
 

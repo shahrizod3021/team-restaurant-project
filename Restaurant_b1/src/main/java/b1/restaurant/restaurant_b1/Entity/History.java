@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 public class History extends AbsNameEntity {
 
-
     private Date date;
 
     @OneToOne

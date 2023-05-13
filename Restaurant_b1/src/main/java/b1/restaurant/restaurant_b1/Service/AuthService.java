@@ -2,10 +2,7 @@ package b1.restaurant.restaurant_b1.Service;
 
 import b1.restaurant.restaurant_b1.Entity.Enums.RoleName;
 import b1.restaurant.restaurant_b1.Entity.User;
-import b1.restaurant.restaurant_b1.Payload.ApiResponse;
-import b1.restaurant.restaurant_b1.Payload.GetMal;
-import b1.restaurant.restaurant_b1.Payload.ReqRegister;
-import b1.restaurant.restaurant_b1.Payload.ResToken;
+import b1.restaurant.restaurant_b1.Payload.*;
 import b1.restaurant.restaurant_b1.Repository.AuthRepository;
 import b1.restaurant.restaurant_b1.Repository.RoleRepo;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
@@ -23,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -58,4 +56,21 @@ public class AuthService implements UserDetailsService {
                         roleRepo.findById(1).get())
         );
     }
+
+    public ResUser getOneUser(UUID uuid){
+        Optional<User> byId = authRepository.findById(uuid);
+        if (byId.isPresent()){
+            User user = byId.get();
+            return  ResUser.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .surname(user.getLastName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .password(user.getPassword())
+                    .zakazList(user.getZakazList())
+                    .build();
+        }
+        return null;
+    }
+
 }
