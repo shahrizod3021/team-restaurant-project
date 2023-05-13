@@ -22,10 +22,13 @@ useEffect(() => {
             ) : (
                 <>
                     <SideBar/>
-                    <div className={"container-fluid page-body-wrapper"}>
-                        <Navbar/>
-                        <Outlet/>
-                    </div>
+                    <main style={{marginTop:"58px"}}>
+                        <div className={"container pt-4"}>
+                            <Navbar/>
+                            <Outlet/>
+                        </div>
+                    </main>
+
                 </>
             )}
         </div>
