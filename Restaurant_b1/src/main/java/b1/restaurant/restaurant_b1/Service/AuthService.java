@@ -73,4 +73,25 @@ public class AuthService implements UserDetailsService {
         return null;
     }
 
+    public ApiResponse editUser(UUID uuid, ReqRegister register){
+        Optional<User> byId = authRepository.findById(uuid);
+        if (byId.isPresent()){
+            User user = byId.get();
+            if (register.getName().trim().length() != 0){
+                user.setName(register.getName());
+            }
+            if (register.getSurname().trim().length() != 0){
+                user.setLastName(register.getSurname());
+            }
+            if(register.getPhoneNumber().trim().length() !=0){
+                user.setPhoneNumber(register.getPhoneNumber());
+            }
+            if (register.getPassword().trim().length() !=0){
+                user.setPassword(register.getPassword());
+            }
+            authRepository.save(user);
+            return new ApiResponse("taxrirlandi", true);
+        }
+        return new ApiResponse("ma'lumotlarda hatolik", false);
+    }
 }

@@ -57,6 +57,12 @@ public class AuthController {
         return ResponseEntity.ok(oneUser);
     }
 
+   @PutMapping("/{id}")
+   public HttpEntity<?> editUser(@PathVariable UUID id, @RequestBody ReqRegister register){
+       ApiResponse apiResponse = authService.editUser(id, register);
+       return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
+   }
+
 
     public GetMal getmalumot(User user, ResToken resToken, String path) {
         return new GetMal(user, resToken, path);
