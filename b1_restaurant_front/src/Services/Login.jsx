@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Loginjon} from "./service.js";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 export const Login = () => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [password, setPassword] = useState('')
@@ -16,37 +16,29 @@ export const Login = () => {
     }
 
     return (
-        <div className={"container"}>
-            <div className="card card-authentication1 mx-auto my-5">
-                <div className="card-body">
-                    <div className="card-content p-2">
-                        <div className="card-title text-uppercase text-center py-3">Sign In</div>
-                        <form>
-                            <div className="form-group">
-                                <label htmlFor="phoneNumber" className="sr-only">phoneNumber</label>
-                                <div className="position-relative has-icon-right">
-                                    <input type="number" id="phoneNumber" className="form-control input-shadow" name={"phoneNumber"}
-                                           placeholder="enter phonen number" value={phoneNumber} onChange={e=> setPhoneNumber(e.target.value)}/>
-                                        <div className="form-control-position">
-                                            <i className="icon-user"></i>
-                                        </div>
+        <div className={"container-fluid page-body-wrapper full-page-wrapper"}>
+            <div className="row w-100 m-0">
+                <div className="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+                    <div className="card col-lg-4 mx-auto">
+                        <div className="card-body px-5 py-5">
+                            <h3 className="card-title text-left mb-3">Login</h3>
+                            <form>
+                                <div className="form-group">
+                                    <label>Phone Number </label>
+                                    <input type="number" className="form-control p_input" id={"phoneNumber"} name={"phoneNumber"} placeholder={"enter phone number"} value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}/>
                                 </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="password" className="sr-only">Password</label>
-                                <div className="position-relative has-icon-right">
-                                    <input type="password" id="password" name={"password"}
-                                           className="form-control input-shadow" placeholder="Enter Password" value={password} onChange={e => setPassword(e.target.value)}/>
-                                        <div className="form-control-position">
-                                            <i className="icon-lock"></i>
-                                        </div>
+                                <div className="form-group">
+                                    <label>Password *</label>
+                                    <input type="password" className="form-control p_input" placeholder={"enter password"} id={"password"} name={"password"} value={password} onChange={e => setPassword(e.target.value)} required/>
                                 </div>
-                            </div>
-                            <button type="button" className="btn btn-light btn-block" onClick={() => login()}>Sign In</button>
-                        </form>
+                                <div className="text-center">
+                                    <button type="button" className="btn btn-primary btn-block enter-btn" onClick={() => login()}>Login</button>
+                                </div>
+                                <p className="sign-up">Don't have an Account?<Link to="/auth/register"> Sign Up</Link></p>
+                            </form>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     )

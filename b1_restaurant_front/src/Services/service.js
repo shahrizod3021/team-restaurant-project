@@ -3,9 +3,22 @@ import {resStatus} from "../handler/ResponseStatus.js";
 import {BASE_URL} from "./BaseUrl.js";
 import axios from "axios";
 import {Apis} from "./Apis.js";
+import {NotFoundPage} from "../Component/NotFoundPage.jsx";
+import React from "react";
 export const Tekshirish = async (setUser) => {
     if (localStorage.getItem("pathjon") === "/auth/admin"){
         setUser(localStorage.getItem("pathjon"))
+    }
+}
+
+export const GetOneUser = async  (id, setUser) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.auth + "/" + id)
+        if (resStatus(res.status)){
+            setUser(res.data)
+        }
+    }catch (err){
+        toast.error("hatolik")
     }
 }
 
@@ -27,12 +40,13 @@ export const Loginjon = async (data) => {
         if (resStatus(res.status)){
             localStorage.setItem("pathjon", res.data.path)
             localStorage.setItem("regyol",res.data.path)
-            return toast.success("hush kelibsiz admin biroz kuting")
+            localStorage.setItem("uuid",res.data.user.id)
+            return toast.success("Hush kelibsiz " + res.data.user.name)
         }
     }catch (err){
         if (err.response.status === 403){
             localStorage.setItem("pathjon","/auth/login")
-            return  toast.error("parol hato qaytadan uruning")
+            return  toast.error("Ma'lumotlarni kiritishda hatolik. Iltimos qaytadan urunib ko'ring")
         }
     }
 }
@@ -45,6 +59,7 @@ export const Registerjon = async (data) => {
         surname:data.surname.trim().length === 0,
     }
     if (check.name || check.surname || check.phoneNumber || check.password){
+        localStorage.setItem("regyol","/auth/register")
         return toast("ma'lumot bo'sh")
     }
     try {

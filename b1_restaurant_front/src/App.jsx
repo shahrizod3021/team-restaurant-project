@@ -5,6 +5,7 @@ import {Register} from "./Services/Register.jsx";
 import {UserLayout} from "./Layout/UserLayout/UserLayout.jsx";
 import {OneUser} from "./Pages/UserPages/OneUser.jsx";
 import {Basic} from "./Pages/AdminPages/Basic.jsx";
+import {NotFoundPage} from "./Component/NotFoundPage.jsx";
 
 export const App =( ) =>  {
   return (
@@ -19,6 +20,7 @@ export const App =( ) =>  {
           </Route>
             <Route path={"/auth/login"} element={<Login/>}/>
             <Route path={"/auth/register"} element={<Register/>}/>
+          <Route path={"*"} element={<NotFoundPage/>}/>
         </Routes>
       </BrowserRouter>
     </div>
