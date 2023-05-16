@@ -1,9 +1,13 @@
 package b1.restaurant.restaurant_b1.Service;
 
+import b1.restaurant.restaurant_b1.Entity.Colors;
 import b1.restaurant.restaurant_b1.Entity.Enums.RoleName;
+import b1.restaurant.restaurant_b1.Entity.Restaurant;
 import b1.restaurant.restaurant_b1.Entity.User;
 import b1.restaurant.restaurant_b1.Payload.*;
 import b1.restaurant.restaurant_b1.Repository.AuthRepository;
+import b1.restaurant.restaurant_b1.Repository.ColorRepository;
+import b1.restaurant.restaurant_b1.Repository.RestaurantRepository;
 import b1.restaurant.restaurant_b1.Repository.RoleRepo;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,9 @@ public class AuthService implements UserDetailsService {
 
     private final RoleRepo roleRepo;
 
+    private final ColorRepository colorRepository;
+
+    private final RestaurantRepository restaurantRepository;
 
     @Autowired
     public PasswordEncoder passwordEncoder() {
@@ -47,46 +54,50 @@ public class AuthService implements UserDetailsService {
     }
 
     public User register(ReqRegister register) {
-        return authRepository.save(
-                new User(
-                        register.getName(),
-                        register.getSurname(),
-                        register.getPhoneNumber(),
-                        passwordEncoder().encode(register.getPassword()),
-                        roleRepo.findById(1).get())
-        );
-    }
-
-    public ResUser getOneUser(UUID uuid){
-        Optional<User> byId = authRepository.findById(uuid);
-        if (byId.isPresent()){
-            User user = byId.get();
-            return  ResUser.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .surname(user.getLastName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .password(user.getPassword())
-                    .zakazList(user.getZakazList())
-                    .build();
+        if (!authRepository.existsUserByPhoneNumber(register.getPhoneNumber())) {
+            Restaurant restaurant = restaurantRepository.findById(1).get();
+            User user = new User(
+                    register.getName(),
+                    register.getSurname(),
+                    register.getPhoneNumber(),
+                    passwordEncoder().encode(register.getPassword()),
+                    roleRepo.findById(1).get());
+            restaurant.getUserSize().add(user);
+            return authRepository.save(user);
         }
         return null;
     }
 
-    public ApiResponse editUser(UUID uuid, ReqRegister register){
+    public ResUser getOneUser(UUID uuid) {
+        for (User user : authRepository.findAll()) {
+            if (user.getId().equals(uuid)) {
+                return ResUser.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .surname(user.getLastName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .password(user.getPassword())
+                        .zakazList(user.getZakazList())
+                        .build();
+            }
+        }
+        return null;
+    }
+
+    public ApiResponse editUser(UUID uuid, ReqRegister register) {
         Optional<User> byId = authRepository.findById(uuid);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             User user = byId.get();
-            if (register.getName().trim().length() != 0){
+            if (register.getName().trim().length() != 0) {
                 user.setName(register.getName());
             }
-            if (register.getSurname().trim().length() != 0){
+            if (register.getSurname().trim().length() != 0) {
                 user.setLastName(register.getSurname());
             }
-            if(register.getPhoneNumber().trim().length() !=0){
+            if (register.getPhoneNumber().trim().length() != 0) {
                 user.setPhoneNumber(register.getPhoneNumber());
             }
-            if (register.getPassword().trim().length() !=0){
+            if (register.getPassword().trim().length() != 0) {
                 user.setPassword(register.getPassword());
             }
             authRepository.save(user);

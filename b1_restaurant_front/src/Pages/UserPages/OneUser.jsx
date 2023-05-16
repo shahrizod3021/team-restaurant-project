@@ -17,7 +17,6 @@ export const OneUser = () => {
             {user.length !== 0 ? (
                 <>
                     <h1>qozi</h1>
-
                 </>
             ) : (
                 <>

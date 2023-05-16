@@ -13,7 +13,7 @@ export const Navbar = () => {
     }, [])
     return (
         <div>
-            qozi
+
         </div>
     )
 }

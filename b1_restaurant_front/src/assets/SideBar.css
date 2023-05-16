@@ -1,3 +1,8 @@
+
+*{
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
 body {
     background-color: #fbfbfb;
 }
@@ -19,6 +24,8 @@ body {
     z-index: 600;
 }
 
+
+
 @media (max-width: 991.98px) {
     .sidebar {
         width: 100%;
@@ -36,4 +43,210 @@ body {
     padding-top: 0.5rem;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.mx-auto {
+    margin-right: auto !important;
+}
+.content-wrapper {
+    background: #000000;
+    padding: 1.875rem 1.75rem;
+    width: 100%;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+}
+
+.auth.login-bg {
+    background: url(banner.jpg);
+    background-size: cover;
+}
+.page-body-wrapper.full-page-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+
+.page-body-wrapper {
+    min-height: 100vh;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    padding-left: 0;
+    padding-right: 0;
+    transition: all 0.25s ease;
+    width: calc(100% - 244px);
+}
+
+.container-scroller {
+    display: flex;
+    position: relative;
+}
+.container-scroller {
+    overflow: hidden;
+}
+
+
+
+.form-group {
+    margin-bottom: 1rem;
+}
+.card .card-title {
+    color: #ffffff;
+    margin-bottom: 1.125rem;
+    text-transform: capitalize;
+}
+
+.form-control{
+    border: 1px solid #2c2e33;
+    height: calc(2.25rem + 2px);
+    font-weight: normal;
+    font-size: 0.875rem;
+    padding: 0.625rem 0.6875rem;
+    background-color: #2A3038;
+    border-radius: 2px;
+    color: #ffffff;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #191c24;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+
+.basic .card:hover{
+    transition: .5s;
+    box-shadow: 1px 5px 10px 1px white;
+}
+
+.sign-up {
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+.special-box {
+    padding-bottom: 40px;
+}
+
+.font-weight-medium {
+    font-weight: 500;
+}
+
+.flag-icon {
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    position: relative;
+    display: inline-block;
+    width: 1.33333333em;
+    line-height: 1em;
+}
+
+.preview-list .preview-item {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    padding: 1rem 0;
+    font-size: .875rem;
+}
+
+.preview-list .preview-item .preview-item-content {
+    line-height: 1;
+    padding-left: 15px;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #2c2e33 !important;
+}
+
+.preview-list .preview-item .preview-thumbnail {
+    color: #ffffff;
+    position: relative;
+}
+
+.mediaCarauselinBasic{
+    display: none;
+}
+
+.mobileFooter{
+    display: none;
+}
+
+
+@media (max-width: 992px){
+    .page-body-wrapper {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 464px){
+    .registerjon .card{
+        margin-bottom: 250px;
+    }
+    .loginjon .card{
+        margin-bottom: 300px;
+    }
+    .basic .card {
+        margin-bottom: 10px;
+    }
+    .authentication{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        bottom: 47px;
+        right: 10px;
+    }
+    .carimg{
+        height: 50vh;
+        width: 100%;
+    }
+    .aksiyacarusel{
+        display: none;
+    }
+    .mediaCarauselinBasic{
+        display: block;
+    }
+
+    .descFooter{
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 820px) {
+    .registerjon .card{
+        margin-bottom: 550px;
+    }
+    .loginjon .card{
+        margin-bottom: 550px;
+    }
+
+    .messageandCar{
+        margin-bottom: 110px;
+    }
+    .descFooter{
+        display: none;
+    }
+    .mobileFooter{
+        display: block;
+        position: fixed;
+        width: 100%;
+        bottom: 70px;
+    }
 }

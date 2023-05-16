@@ -7,6 +7,7 @@ import {OneUser} from "./Pages/UserPages/OneUser.jsx";
 import {Basic} from "./Pages/AdminPages/Basic.jsx";
 import {NotFoundPage} from "./Component/NotFoundPage.jsx";
 import {Main} from "./Pages/UserPages/Main.jsx";
+import {Category} from "./Pages/AdminPages/Category.jsx";
 
 export const App =( ) =>  {
   return (
@@ -15,6 +16,7 @@ export const App =( ) =>  {
         <Routes>
           <Route path={"/auth/admin"} element={<AdminLayout/>} >
             <Route index element={<Basic/>} />
+            <Route path={"/auth/admin/category"} element={<Category/>} />
           </Route>
           <Route path={"/"} element={<UserLayout/>}>
             <Route index element={<Main/>}/>

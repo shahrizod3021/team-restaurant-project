@@ -1,3 +1,5 @@
 export const Apis = {
-   auth:"/auth"
+   auth:"/auth",
+   color:"/color",
+   restaurant:"/restaurant"
 }

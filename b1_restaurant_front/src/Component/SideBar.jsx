@@ -1,66 +1,85 @@
 import  '../assets/SideBar.css'
 import {Link, useParams} from "react-router-dom";
-import {GetOneUser} from "../Services/service.js";
+import {GetColor, GetOneUser} from "../Services/service.js";
 import {useEffect, useState} from "react";
+import {set} from "mdb-ui-kit/src/js/mdb/perfect-scrollbar/lib/css.js";
+import axios from "axios";
+import {BASE_URL} from "../Services/BaseUrl.js";
+import {Apis} from "../Services/Apis.js";
+
 
 export const SideBar = () => {
+    const [color, setColor] = useState({})
     const [user, setUser] = useState('')
     const id = localStorage.getItem("uuid")
     const oneUser = async  () =>{
         await GetOneUser(id, setUser)
     }
+
+    const getColor = async () => {
+        await GetColor(setColor, id)
+    }
+
     useEffect(() => {
         oneUser()
+        getColor()
     }, [])
 
+    const changeColor = async () => {
+        const data = {
+            bgColor:"#fff",textColor:"#191c24", id:id
+        }
+        const res = await axios.put(BASE_URL + Apis.color, data)
+        window.location.reload()
+    }
+
+    const changeColor2 = async () => {
+        const data = {
+            bgColor:"#191c24",textColor:"#fff", id:id
+        }
+        const res = await axios.put(BASE_URL + Apis.color, data)
+        window.location.reload()
+    }
+
     return (
-        <div >
-            <header className={""}>
-                <nav id="sidebarMenu" className="collapse d-lg-block sidebar collapse bg-white">
-                    <div className="position-sticky">
+        <div>
+            <header >
+                <nav id="sidebarMenu" className="collapse d-lg-block sidebar collapse" style={{backgroundColor:`${color.bgColor}`}}>
+                    <div className="position-sticky " style={{backgroundColor:`${color.bgColor}`}}>
                         <div className="list-group list-group-flush mx-3 mt-4">
-                            <a
-                                href="#"
-                                className="list-group-item list-group-item-action py-2 ripple"
+                            <Link
+                                to="/auth/admin"
+                                className="list-group-item list-group-item-action py-2 ripple" style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
                                 aria-current="true"
                             >
-                                <i className="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                            </a>
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple active">
-                                <i className="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
-                            </a>
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-lock fa-fw me-3"></i><span>Password</span></a
+                                <i className="fas fa-tachometer-alt fa-fw me-3"></i><span>Asosiy bo'lim</span>
+                            </Link>
+                            <Link to="/auth/admin/category" className="list-group-item list-group-item-action py-2 ripple" style={{backgroundColor:`${color.bgColor}`,color:`${color.textColor}`}}>
+                                <i className="fas fa-chart-area fa-fw me-3"></i><span>Kategoriyalar</span>
+                            </Link>
+                            <Link to="/auth/admin/product" className="list-group-item list-group-item-action py-2 ripple" style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
+                            ><i className="fas fa-lock fa-fw me-3"></i><span>Mahsultolar</span></Link
                             >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a
+                            <Link to="/auth/admin/zakaz" className="list-group-item list-group-item-action py-2 ripple " style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
+                            ><i className="fas fa-chart-line fa-fw me-3"></i><span>Zakazalar</span></Link
                             >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple">
-                                <i className="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
-                            </a>
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a
+                            <Link to="/auth/admin/sale" className="list-group-item list-group-item-action py-2 ripple " style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}>
+                                <i className="fas fa-money-bill fa-fw me-3"></i><span>Aksiya</span>
+                            </Link>
+                            <Link to="/auth/admin/arxiv" className="list-group-item list-group-item-action py-2 ripple " style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
+                            ><i className="fas fa-history fa-fw me-3"></i><span>Arxiv</span></Link
                             >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-globe fa-fw me-3"></i><span>International</span></a
+                            <Link to="/auth/admin/filial" className="list-group-item list-group-item-action py-2 ripple " style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
+                            ><i className="fas fa-plus fa-fw me-3"></i><span>Filial</span></Link
                             >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-building fa-fw me-3"></i><span>Partners</span></a
-                            >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-calendar fa-fw me-3"></i><span>Calendar</span></a
-                            >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-users fa-fw me-3"></i><span>Users</span></a
-                            >
-                            <a href="#" className="list-group-item list-group-item-action py-2 ripple"
-                            ><i className="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a
+                            <Link to="/auth/admin/newadmin" className="list-group-item list-group-item-action py-2 ripple " style={{backgroundColor:`${color.bgColor}`, color:`${color.textColor}`}}
+                            ><i className="fas fa-user-plus fa-fw me-3"></i><span>New admin</span></Link
                             >
                         </div>
                     </div>
                 </nav>
 
-                <nav id="main-navbar" className="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+                <nav id="main-navbar" className="navbar navbar-expand-lg navbar-light fixed-top" style={{backgroundColor:`${color.bgColor}`}}>
                     <div className="container-fluid">
                         <button
                             className="navbar-toggler"
@@ -74,23 +93,18 @@ export const SideBar = () => {
                             <i className="fas fa-bars"></i>
                         </button>
 
-                        <a className="navbar-brand" href="#">
-                            <img
-                                src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
-                                height="25"
-                                alt="MDB Logo"
-                                loading="lazy"
-                            />
+                        <a className="navbar-brand" href="#" style={{color:`${color.textColor}`}}>
+                            <h2 style={{color:`${color.textColor}`}}>Restaurant</h2>
                         </a>
                         <form className="d-none d-md-flex input-group w-auto my-auto">
                             <input
-                                autocomplete="off"
+                                autoComplete="off"
                                 type="search"
                                 className="form-control rounded"
                                 placeholder='Search (ctrl + "/" to focus)'
-                                style={{minWidth: "225px"}}
+                                style={{minWidth: "225px", backgroundColor:`${color.textColor}`}}
                             />
-                            <span className="input-group-text border-0"><i className="fas fa-search"></i></span>
+                            <button type={"button"} className="input-group-text border-0"><i className="fas fa-search" style={{color:`${color.textColor}`}}></i></button>
                         </form>
 
                         <ul className="navbar-nav ms-auto d-flex flex-row">
@@ -103,7 +117,7 @@ export const SideBar = () => {
                                     data-mdb-toggle="dropdown"
                                     aria-expanded="false"
                                 >
-                                    <i className="fas fa-bell"></i>
+                                    <i className="fas fa-bell "  style={{color:`${color.textColor}`}}></i>
                                     <span className="badge rounded-pill badge-notification bg-danger">1</span>
                                 </a>
                                 <ul
@@ -123,60 +137,16 @@ export const SideBar = () => {
                             </li>
 
                             <li className="nav-item">
-                                <a className="nav-link me-3 me-lg-0" href="#">
-                                    <i className="fas fa-fill-drip"></i>
-                                </a>
-                            </li>
-                            <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="#">
-                                    <i className="fab fa-github"></i>
-                                </a>
-                            </li>
-
-                            <li className="nav-item dropdown">
-                                <a
-                                    className="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow"
-                                    href="#"
-                                    id="navbarDropdown"
-                                    role="button"
-                                    data-mdb-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    <i className="flag-united-kingdom flag m-0"></i>
-                                </a>
-                                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li>
-                                        <a className="dropdown-item" href="#"
-                                        ><i className="flag-united-kingdom flag"></i>English
-                                            <i className="fa fa-check text-success ms-2"></i
-                                            ></a>
-                                    </li>
-                                    <li><hr className="dropdown-divider" /></li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-poland flag"></i>Polski</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-china flag"></i>中文</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-japan flag"></i>日本語</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-germany flag"></i>Deutsch</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-france flag"></i>Français</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-spain flag"></i>Español</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-russia flag"></i>Русский</a>
-                                    </li>
-                                    <li>
-                                        <a className="dropdown-item" href="#"><i className="flag-portugal flag"></i>Português</a>
-                                    </li>
-                                </ul>
+                                {color.textColor === "#fff" ? (
+                                    <button type={"button"} className="nav-link me-3 me-lg-0 border-0 input-group-text" onClick={() => changeColor()}>
+                                        <i className="fas fa-fill-drip" style={{color:`${color.textColor}`}}></i>
+                                    </button>
+                                ): (
+                                    <button type={"button"} className="nav-link me-3 me-lg-0 border-0 input-group-text" onClick={() => changeColor2()}>
+                                        <i className="fas fa-fill-drip" style={{color:`${color.textColor}`}}></i>
+                                    </button>
+                                )
+                                }
                             </li>
 
                             <li className="nav-item dropdown">
@@ -200,6 +170,13 @@ export const SideBar = () => {
                                     className="dropdown-menu dropdown-menu-end"
                                     aria-labelledby="navbarDropdownMenuLink"
                                 >
+                                    <li>
+                                        <p style={{marginLeft:"10px", marginBottom:"0", padding:"0"}}>Signed in as</p>
+                                        <p style={{marginLeft:"10px", marginBottom:"5px", padding:"0px"}}>{user.name} {user.surname}</p>
+                                    </li>
+                                    <li>
+                                        <hr className={"dropdown-divider"}/>
+                                    </li>
                                     <li>
                                         <a className="dropdown-item" href="#">My profile</a>
                                     </li>

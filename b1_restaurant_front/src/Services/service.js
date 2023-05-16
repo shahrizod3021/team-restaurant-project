@@ -5,6 +5,7 @@ import axios from "axios";
 import {Apis} from "./Apis.js";
 import {NotFoundPage} from "../Component/NotFoundPage.jsx";
 import React from "react";
+import {set} from "mdb-ui-kit/src/js/mdb/perfect-scrollbar/lib/css.js";
 export const Tekshirish = async (setUser) => {
     if (localStorage.getItem("pathjon") === "/auth/admin"){
         setUser(localStorage.getItem("pathjon"))
@@ -18,7 +19,27 @@ export const GetOneUser = async  (id, setUser) => {
             setUser(res.data)
         }
     }catch (err){
-        toast.error("hatolik")
+
+    }
+}
+
+export const GetColor = async (setColor, id) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.color + "/" + id)
+        if (resStatus(res.status)){
+            setColor(res.data)
+        }
+    }catch (err){
+        toast.error("rangda hatolik")
+    }
+}
+
+export const GetRestaurant = async (setRestaurant) => {
+    try {
+        const res  =await axios.get(BASE_URL + Apis.restaurant)
+        setRestaurant(res.data);
+    }catch (err){
+        toast.error("internal error. Status code 500")
     }
 }
 
@@ -60,18 +81,23 @@ export const Registerjon = async (data) => {
     }
     if (check.name || check.surname || check.phoneNumber || check.password){
         localStorage.setItem("regyol","/auth/register")
-        return toast("ma'lumot bo'sh")
+        return toast.warning("ma'lumot bo'sh")
     }
     try {
         const res = await axios.post(BASE_URL + Apis.auth + "/register",data)
         if (resStatus(res.status)){
-            localStorage.setItem("regyol",res.data.message)
+            localStorage.setItem("uuid",res.data.user.id)
+            localStorage.setItem("regyol",res.data.path)
             return toast("registratsiyadan muvaffaqiyatli o'tdingiz")
         }
     }catch (err){
         if (err.response.status === 409 || err.response.status === 404){
             localStorage.setItem("regyol","/auth/register")
             return toast.error("registratsiyada hatolik")
+        }
+        if (err.response.status === 500){
+            localStorage.setItem("regyol","/auth/register")
+            return toast.error("bunday telefon raqam bizning bazada mavjud boshqa telefon raqam orqali registratsiyadan o'tishga harakat qilib ko'ring")
         }
     }
 }

@@ -31,6 +31,8 @@ public class User extends AbsEntity implements UserDetails {
     @OneToMany
     private List<Zakaz> zakazList;
 
+    @ManyToOne
+    private Colors colors;
 
     @ManyToOne
     @JoinTable(name = "user_role",
@@ -73,11 +75,21 @@ public class User extends AbsEntity implements UserDetails {
         return enabled;
     }
 
+    public User(String name, String lastName, String phoneNumber, String password, Role role, Colors colors) {
+        this.name = name;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.role = role;
+        this.colors = colors;
+    }
+
     public User(String name, String lastName, String phoneNumber, String password, Role role) {
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
+
     }
 }

@@ -1,9 +1,11 @@
 package b1.restaurant.restaurant_b1.Controller;
 
+import b1.restaurant.restaurant_b1.Entity.Colors;
 import b1.restaurant.restaurant_b1.Entity.Enums.RoleName;
 import b1.restaurant.restaurant_b1.Entity.User;
 import b1.restaurant.restaurant_b1.Payload.*;
 import b1.restaurant.restaurant_b1.Repository.AuthRepository;
+import b1.restaurant.restaurant_b1.Repository.ColorRepository;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
 import b1.restaurant.restaurant_b1.Service.AuthService;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +41,6 @@ public class AuthController {
         if (user.getRole().getRoleName().equals(RoleName.USER)) {
             return ResponseEntity.ok(getmalumot(user, resToken, "/foydalanuvchi"));
         }
-        System.out.println("salom git");
         return ResponseEntity.ok(getmalumot(user, resToken, "/auth/admin"));
     }
 
@@ -46,7 +48,7 @@ public class AuthController {
     public HttpEntity<?> register(@RequestBody ReqRegister register) {
         User user = authService.register(register);
         if (user.getRole().getRoleName().equals(RoleName.USER)) {
-            return ResponseEntity.ok(new ApiResponse("/foydalanuvchi", true));
+            return ResponseEntity.ok(new GetMal(user, null, "/foydalanuvchi"));
         }
         return ResponseEntity.ok(new ApiResponse("/auth/admin", true));
     }
