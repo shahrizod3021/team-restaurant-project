@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/attachment")
 public class AttachmentController {
@@ -23,7 +24,7 @@ public class AttachmentController {
     }
 
     @GetMapping("/download")
-    public HttpEntity<?> getFile(@RequestParam(name = "id"  , required = false) UUID id) {
+    public HttpEntity<?> getFile(@RequestParam(name = "id", required = false) UUID id) {
         return attachmentService.getFileJon(id);
     }
 }

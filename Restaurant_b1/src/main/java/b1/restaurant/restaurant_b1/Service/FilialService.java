@@ -24,8 +24,8 @@ public class FilialService {
 
     private final DistrictRepository districtRepository;
 
-    public ApiResponse addCountry(ReqCountry reqCountry){
-        if (!countryRepository.existsCountryByNameEqualsIgnoreCase(reqCountry.getName())){
+    public ApiResponse addCountry(ReqCountry reqCountry) {
+        if (!countryRepository.existsCountryByNameEqualsIgnoreCase(reqCountry.getName())) {
             Country country = new Country();
             country.setName(reqCountry.getName());
             countryRepository.save(country);
@@ -34,7 +34,7 @@ public class FilialService {
         return new ApiResponse("ushbu davlat ma'lumotlar bazasida mavjud", false);
     }
 
-    public List<ResCountry> getCountry(){
+    public List<ResCountry> getCountry() {
         List<ResCountry> resCountries = new ArrayList<>();
         for (Country country : countryRepository.findAll()) {
             ResCountry build = ResCountry.builder()
@@ -46,9 +46,9 @@ public class FilialService {
         return resCountries;
     }
 
-    public ApiResponse editCountry(Integer id, ReqCountry reqCountry){
+    public ApiResponse editCountry(Integer id, ReqCountry reqCountry) {
         Optional<Country> byId = countryRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Country country = byId.get();
             country.setName(reqCountry.getName());
             countryRepository.save(country);
@@ -57,9 +57,9 @@ public class FilialService {
         return new ApiResponse("Bunday davlat topilamdi", false);
     }
 
-    public ApiResponse deleteCountry(Integer id){
+    public ApiResponse deleteCountry(Integer id) {
         Optional<Country> byId = countryRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Country country = byId.get();
             countryRepository.delete(country);
             return new ApiResponse("Davlat olib tashlandi", true);
@@ -67,7 +67,7 @@ public class FilialService {
         return new ApiResponse("Bunday davlat topilamdi", false);
     }
 
-    public ApiResponse addRegion(ReqRegion region){
+    public ApiResponse addRegion(ReqRegion region) {
         Optional<Country> byId = countryRepository.findById(region.getCountryId());
         if (byId.isPresent()) {
             Country country = byId.get();
@@ -84,7 +84,7 @@ public class FilialService {
         return new ApiResponse("Siz tanlagan davlat ma'lumotlar bazasida topilmadi", false);
     }
 
-    public List<ResRegion> getRegion(){
+    public List<ResRegion> getRegion() {
         List<ResRegion> resRegions = new ArrayList<>();
         for (Region region : regionRepository.findAll()) {
             ResRegion build = ResRegion.builder()
@@ -97,7 +97,7 @@ public class FilialService {
         return resRegions;
     }
 
-    public List<ResRegion> getRegionOfOneCountry(Integer id){
+    public List<ResRegion> getRegionOfOneCountry(Integer id) {
         List<ResRegion> resRegions = new ArrayList<>();
         for (Region region : regionRepository.findRegionByCountries_Id(id)) {
             ResRegion build = ResRegion.builder()
@@ -110,10 +110,10 @@ public class FilialService {
         return resRegions;
     }
 
-    public ApiResponse editRegion(Integer id, ReqRegion reqRegion){
+    public ApiResponse editRegion(Integer id, ReqRegion reqRegion) {
         Optional<Region> byId = regionRepository.findById(id);
-        if (byId.isPresent()){
-            if (!regionRepository.existsRegionByNameEqualsIgnoreCase(reqRegion.getName())){
+        if (byId.isPresent()) {
+            if (!regionRepository.existsRegionByNameEqualsIgnoreCase(reqRegion.getName())) {
                 Region region = byId.get();
                 region.setName(reqRegion.getName());
                 regionRepository.save(region);
@@ -124,9 +124,9 @@ public class FilialService {
         return new ApiResponse("Viloyat ma'lumotlar bazasida topilamdi", false);
     }
 
-    public ApiResponse deleteRegion(Integer id){
+    public ApiResponse deleteRegion(Integer id) {
         Optional<Region> byId = regionRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Region region = byId.get();
             regionRepository.delete(region);
             return new ApiResponse("viloyat olib tashlandi", true);
@@ -134,7 +134,7 @@ public class FilialService {
         return new ApiResponse("bunday viloyat ma'lumotlar bazasida topilamdi", false);
     }
 
-    public ApiResponse addDistrict(ReqDistrict reqDistrict){
+    public ApiResponse addDistrict(ReqDistrict reqDistrict) {
         Optional<Region> byId = regionRepository.findById(reqDistrict.getRegionId());
         if (byId.isPresent()) {
             Region region = byId.get();
@@ -151,7 +151,7 @@ public class FilialService {
         return new ApiResponse("Siz tanlagan viloyat ma'lumotlar bazasida topilmadi", false);
     }
 
-    public List<ResDistrict> getDistrict(){
+    public List<ResDistrict> getDistrict() {
         List<ResDistrict> resDistricts = new ArrayList<>();
         for (District district : districtRepository.findAll()) {
             ResDistrict build = ResDistrict.builder()
@@ -181,11 +181,11 @@ public class FilialService {
         return null;
     }
 
-    public ApiResponse editDistrict(Integer id, ReqDistrict reqDistrict){
+    public ApiResponse editDistrict(Integer id, ReqDistrict reqDistrict) {
         Optional<District> byId = districtRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             District district = byId.get();
-            if (!districtRepository.existsDistrictByNameEqualsIgnoreCase(reqDistrict.getName())){
+            if (!districtRepository.existsDistrictByNameEqualsIgnoreCase(reqDistrict.getName())) {
                 district.setName(reqDistrict.getName());
                 districtRepository.save(district);
                 return new ApiResponse("tuman nomi taxrirlandi", true);
@@ -195,9 +195,9 @@ public class FilialService {
         return new ApiResponse("Siz tanlagan tuman topilamdi", false);
     }
 
-    public ApiResponse deleteDistrict(Integer id){
+    public ApiResponse deleteDistrict(Integer id) {
         Optional<District> byId = districtRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             District district = byId.get();
             districtRepository.delete(district);
             return new ApiResponse("Tuman olib tashlandi", true);

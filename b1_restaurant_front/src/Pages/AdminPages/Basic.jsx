@@ -23,7 +23,7 @@ export const Basic = () => {
         getRestaurant()
     }, [])
     return (
-        <div className={"basic"} style={{color: `${color.bgColor}`}}>
+        <div className={"basic"} style={{color: `${color.bgColor}`, height:"200vh"}}>
             <div className="row mb-5">
                 <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
                     <div className="card mb-2" style={{backgroundColor: `${color.textColor}`}}>
@@ -119,26 +119,6 @@ export const Basic = () => {
                                 </div>
                             </div>
                             <h6 className=" font-weight-normal">Kunlik foyda</h6>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
-                    <div className="card mb-2" style={{backgroundColor: `${color.textColor}`}}>
-                        <div className="card-body">
-                            <div className="row">
-                                <div className="col-9">
-                                    <div className="d-flex align-items-center align-self-start">
-                                        <h3 className="mb-0">$31.53</h3>
-                                        <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-                                    </div>
-                                </div>
-                                <div className="col-3">
-                                    <div className="icon icon-box-success text-success" style={{fontSize: "20px"}}>
-                                        <span className="bi-arrow-up-right icon-item"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <h6 className=" font-weight-normal">Expense current</h6>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,9 @@ import b1.restaurant.restaurant_b1.Payload.ReqDistrict;
 import b1.restaurant.restaurant_b1.Payload.ResCategory;
 import b1.restaurant.restaurant_b1.Repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,34 +21,19 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<ResCategory> getCategory(){
-        List<ResCategory> resCategories = new ArrayList<>();
-        for (Category category : categoryRepository.findAll()) {
-            ResCategory build = ResCategory.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .photoId(category.getPhotoId())
-                    .build();
-            resCategories.add(build);
+    public Category addCategory(ReqCategory reqCategory) {
+        if (!categoryRepository.existsCategoryByNameEqualsIgnoreCase(reqCategory.getName())) {
+            Category category = new Category(reqCategory.getName(), false);
+            return categoryRepository.save(category);
         }
-        return resCategories;
+        return null;
     }
 
-
-    public ApiResponse addCategory(ReqCategory reqCategory){
-        if (!categoryRepository.existsCategoryByNameEqualsIgnoreCase(reqCategory.getName())){
-            Category category = new Category(reqCategory.getName());
-            categoryRepository.save(category);
-            return new ApiResponse("Categoriya saqalandi", true);
-        }
-        return new ApiResponse("bunday categoriya bizda avvaldan mavjud", false);
-    }
-
-    public ApiResponse editCategory(Integer id, ReqCategory reqCategory){
+    public ApiResponse editCategory(Integer id, ReqCategory reqCategory) {
         Optional<Category> byId = categoryRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Category category = byId.get();
-            if (!categoryRepository.existsCategoryByNameEqualsIgnoreCase(reqCategory.getName())) {
+            if (!categoryRepository.existsCategoryByNameEqualsIgnoreCaseAndIdNot(reqCategory.getName(), category.getId())) {
                 category.setName(reqCategory.getName());
                 categoryRepository.save(category);
                 return new ApiResponse("categoriya taxrirlandi", true);
@@ -56,9 +43,11 @@ public class CategoryService {
         return new ApiResponse("Siz tanlagan categoriya topilmadi", false);
     }
 
-    public ApiResponse deleteCategory(Integer id){
+    public ApiResponse deleteCategory(Integer id) {
+//        Category category1 = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("getCategory"));
+//        categoryRepository.delete(category1);
         Optional<Category> byId = categoryRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             Category category = byId.get();
             categoryRepository.delete(category);
             return new ApiResponse("categoriya olib tashlandi", true);

@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
@@ -42,7 +41,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private static class PushStateResourceResolver implements ResourceResolver {
         private Resource index = new ClassPathResource("/static/index.html");
-        private List<String> handledExtensions = Arrays.asList("html", "js", "json", "csv", "css", "png", "svg", "eot", "ttf", "otf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
+        private List<String> handledExtensions = Arrays.asList("html", "js",  "json", "csv", "css", "png", "svg", "eot", "ttf", "otf", "woff", "appcache", "jpg", "jpeg", "gif", "ico");
         private List<String> ignoredPaths = Collections.singletonList("api");
 
         @Override

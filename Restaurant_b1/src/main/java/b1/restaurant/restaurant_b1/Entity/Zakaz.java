@@ -7,6 +7,8 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
 
@@ -26,4 +28,7 @@ public class Zakaz extends AbsNameEntity {
     private List<Product> products;
 
     private Date date;
+
+    @ManyToOne
+    private Aksiya aksiya;
 }

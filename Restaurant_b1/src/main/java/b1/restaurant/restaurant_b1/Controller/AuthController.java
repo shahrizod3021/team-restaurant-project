@@ -8,8 +8,10 @@ import b1.restaurant.restaurant_b1.Repository.AuthRepository;
 import b1.restaurant.restaurant_b1.Repository.ColorRepository;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
 import b1.restaurant.restaurant_b1.Service.AuthService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,22 +50,31 @@ public class AuthController {
     public HttpEntity<?> register(@RequestBody ReqRegister register) {
         User user = authService.register(register);
         if (user.getRole().getRoleName().equals(RoleName.USER)) {
-            return ResponseEntity.ok(new GetMal(user, null, "/foydalanuvchi"));
+            return ResponseEntity.ok(new GetMal(user, null, "/upload/photo"));
         }
         return ResponseEntity.ok(new ApiResponse("/auth/admin", true));
     }
 
     @GetMapping("/{id}")
-    public HttpEntity<?> getOneUser(@PathVariable UUID id){
+    public HttpEntity<?> getOneUser(@PathVariable UUID id) {
         ResUser oneUser = authService.getOneUser(id);
         return ResponseEntity.ok(oneUser);
     }
 
-   @PutMapping("/{id}")
-   public HttpEntity<?> editUser(@PathVariable UUID id, @RequestBody ReqRegister register){
-       ApiResponse apiResponse = authService.editUser(id, register);
-       return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
-   }
+    @PutMapping("/upload/{id}")
+    public HttpEntity<?> uploadPhotojon(@PathVariable UUID id, @RequestParam(name = "photoId") UUID photoId) {
+        User user = authRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("getUser"));
+        user.setPhotoId(photoId);
+        authRepository.save(user);
+        return ResponseEntity.ok(new ApiResponse("malladess", true));
+    }
+
+
+    @PutMapping("/{id}")
+    public HttpEntity<?> editUser(@PathVariable UUID id, @RequestBody ReqRegister register) {
+        ApiResponse apiResponse = authService.editUser(id, register);
+        return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 409).body(apiResponse);
+    }
 
 
     public GetMal getmalumot(User user, ResToken resToken, String path) {

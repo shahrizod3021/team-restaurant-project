@@ -6,6 +6,7 @@ import * as mdb from 'mdb-ui-kit'
 import {App} from "./App.jsx";
 import 'react-multi-carousel/lib/styles.css';
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App/>

@@ -64,7 +64,72 @@ body {
     width: 100%;
     min-height: 100vh;
 }
+.banner {
+    background: url(banner.jpg) no-repeat center top;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    min-height: 100%;
+}
+.banner-text {
+    display: table;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
 
+.banner-cell {
+    display: table-cell;
+    vertical-align: middle;
+    color: #fff;
+}
+.banner-text h1 {
+    font-family: 'nautilus_pompiliusregular';
+    letter-spacing: 2.7px;
+    position: relative;
+    display: inline-block;
+    font-size: 74px;
+    line-height: 100px;
+    color: #fff;
+    padding-bottom: 0;
+    padding-top: 100px;
+}
+.banner-text h2 {
+    color: #e75b1e;
+}
+
+.banner-text h2 {
+    font-family: 'nautilus_pompiliusregular';
+    letter-spacing: 2.7px;
+    position: relative;
+    font-size: 37px;
+    line-height: 100px;
+    padding-bottom: 25px;
+}
+.banner-text p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: #ccc;
+    padding-bottom: 35px;
+    margin: 0px;
+}
+.book-btn a {
+    background: #e75b1e;
+    border: 3px solid #e75b1e;
+}
+
+.book-btn a {
+    background: #e75b1e;
+    color: #fff;
+    min-width: 219px;
+    padding: 10.5px 20px;
+    display: inline-block;
+    text-align: center;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 18px;
+}
 
 
 .page-body-wrapper {
@@ -119,6 +184,7 @@ body {
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
+    padding: 0;
 }
 
 .basic .card:hover{
@@ -184,8 +250,56 @@ body {
     display: none;
 }
 
+.sale .mediaCarauselinBasic{
+    display: block;
+}
+
 .mobileFooter{
     display: none;
+}
+
+
+.searchInBasic{
+    margin-left: 200px;
+    display: flex;
+    margin-top: 30px;
+}
+
+.saleInBasic{
+    margin-left: 100px;
+    width: 20%;
+}
+.search{
+    width: 50%;
+    margin-right: 100px;
+}
+
+.menues:hover{
+    text-decoration-skip: revert;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: gray;
+    text-decoration-style: initial;
+    -webkit-transition-delay: inherit;
+}
+
+.category{
+    margin-left: 150px;
+}
+
+.categoryName{
+    margin-right: 70px;
+}
+
+.aksiyacarusel{
+    margin-left: 140px;
+    display: flex;
+    align-items: center;
+}
+
+.carimg{
+    border-radius: 50px;
+
 }
 
 
@@ -194,8 +308,14 @@ body {
         width: 100%;
     }
 }
+.saleButton{
+    margin-bottom: 20px;
+}
 
 @media only screen and (max-width: 464px){
+    .categoryAction{
+        display: flex;
+    }
     .registerjon .card{
         margin-bottom: 250px;
     }
@@ -210,12 +330,8 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        bottom: 47px;
+        bottom: 5px;
         right: 10px;
-    }
-    .carimg{
-        height: 50vh;
-        width: 100%;
     }
     .aksiyacarusel{
         display: none;
@@ -227,6 +343,32 @@ body {
     .descFooter{
         display: none;
     }
+   .saleButton{
+       margin-bottom: 20px;
+   }
+   .searchInBasic{
+       margin-left: 0;
+       display: flex;
+       flex-direction: column;
+   }
+   .saleInBasic{
+       width: 50%;
+       margin-top: 10px;
+       margin-left: 100px;
+   }
+
+   .search{
+       width: 100%;
+   }
+   .category{
+       margin-left: 0;
+   }
+   .category{
+       margin-bottom: 100px;
+   }
+   .navbarCategory{
+       margin-bottom: 10px;
+   }
 }
 
 @media only screen and (max-width: 820px) {
@@ -248,5 +390,8 @@ body {
         position: fixed;
         width: 100%;
         bottom: 70px;
+    }
+    .categoryName{
+        margin-right: 0;
     }
 }

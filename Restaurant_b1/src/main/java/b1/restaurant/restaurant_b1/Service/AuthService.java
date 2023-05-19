@@ -78,6 +78,7 @@ public class AuthService implements UserDetailsService {
                         .phoneNumber(user.getPhoneNumber())
                         .password(user.getPassword())
                         .zakazList(user.getZakazList())
+                        .photoId(user.getPhotoId())
                         .build();
             }
         }

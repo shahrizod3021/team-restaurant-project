@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
+//permission
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -76,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests()
                 .antMatchers("/api/auth/**")
                 .permitAll()
-                .antMatchers("/api/filial/**", "/api/color/**", "/api/restaurant/**")
+                .antMatchers("/api/filial/**", "/api/color/**", "/api/category/**", "/api/restaurant/**", "/api/attachment/**", "/api/product/**", "/api/sale/**")
                 .permitAll()
                 .antMatchers("/api/**")
                 .authenticated();

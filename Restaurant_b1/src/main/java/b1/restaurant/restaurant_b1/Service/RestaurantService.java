@@ -6,6 +6,7 @@ import b1.restaurant.restaurant_b1.Payload.ResRestaurant;
 import b1.restaurant.restaurant_b1.Repository.RestaurantRepository;
 import b1.restaurant.restaurant_b1.Repository.ZakazRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,16 +20,16 @@ public class RestaurantService {
     private final ZakazRepository zakazRepository;
 
     public ResRestaurant getRestaurant() {
-        Restaurant restaurant = restaurantRepository.findById(1).get();
+        Restaurant restaurant = restaurantRepository.findById(1).orElseThrow(() -> new ResourceNotFoundException("getRestaran"));
         double kunlikFoyda = kunlikFoyda();
         double kechagiFoyda = kechagiFoyda();
         double v6 = 0;
         double v7 = 0;
         double v = kunlikFoyda * 100;
         double v1 = v / kechagiFoyda;
-        if (kechagiFoyda > kunlikFoyda){
+        if (kechagiFoyda > kunlikFoyda) {
             v6 = 100 - v1;
-        }else {
+        } else {
             v7 = v1 - 100;
         }
         double oylikFoyda = oylikFoyda();

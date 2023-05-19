@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import {Loginjon} from "./service.js";
 import {Link, useNavigate} from "react-router-dom";
+
 export const Login = () => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
-    const login = async  () => {
+    const login = async () => {
         const data = {
-            phoneNumber,password
+            phoneNumber, password
         }
         await Loginjon(data)
         setTimeout(() => {
@@ -23,19 +24,24 @@ export const Login = () => {
                         <div className={"card col-lg-4 mx-auto"}>
                             <div className={"card-body px-5 py-5"}>
                                 <h3 className={"card-title text-start mb-3"}>Login</h3>
-                                <form >
+                                <form>
                                     <div className={"form-group"}>
                                         <label htmlFor="phoneNumber">Telefon raqam</label>
-                                        <input type="number" placeholder={"Telefon raqam kiriting"} className={"form-control"} id={"phoneNumber"} name={"phoneNumber"}
-                                               value={phoneNumber} onChange={e=> setPhoneNumber(e.target.value)}
+                                        <input type="number" placeholder={"Telefon raqam kiriting"}
+                                               className={"form-control"} id={"phoneNumber"} name={"phoneNumber"}
+                                               value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}
                                         />
                                     </div>
                                     <div className={"form-group"}>
                                         <label htmlFor="password">Parol</label>
-                                        <input type="password" placeholder={"parolni kiriting"} id={"password"} name={"password"} className={"form-control"} value={password} onChange={e => setPassword(e.target.value)}/>
+                                        <input type="password" placeholder={"parolni kiriting"} id={"password"}
+                                               name={"password"} className={"form-control"} value={password}
+                                               onChange={e => setPassword(e.target.value)}/>
                                     </div>
                                     <div className={"text-center"}>
-                                        <button type={"button"} className={"btn btn-primary btn-block "} onClick={() => login()}>Sign In</button>
+                                        <button type={"button"} className={"btn btn-primary btn-block "}
+                                                onClick={() => login()}>Sign In
+                                        </button>
                                     </div>
                                 </form>
                                 <p className={"sign-up text-center text-light"}>

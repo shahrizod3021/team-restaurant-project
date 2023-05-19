@@ -17,7 +17,7 @@ public class JwtTokenProvider {
     private Long expireTime;
 
     public String generateToken(UUID id) {
-        Date yashashMuddati = new Date(new Date().getTime() + expireTime);
+        Date yashashMuddati = new Date(new Date().getDate() + expireTime);
         return Jwts.builder()
                 .setSubject(id.toString())
                 .setIssuedAt(new Date())

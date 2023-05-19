@@ -16,16 +16,16 @@ import java.util.UUID;
 @Entity
 public class Product extends AbsNameEntity {
 
-    @Column(nullable = false, length = 10000)
+    @Column(length = 10000)
     private String description;
 
-    @Column(nullable = false)
     private double price;
 
-    @Column(nullable = false)
     private UUID photoId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Category category;
+
+    private boolean sale;
 
 }

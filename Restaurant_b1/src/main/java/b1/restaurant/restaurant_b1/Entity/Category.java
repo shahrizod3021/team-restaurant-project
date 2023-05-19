@@ -17,7 +17,11 @@ public class Category extends AbsNameEntity {
 
     private UUID photoId;
 
-    public Category(String name) {
+    private boolean sale;
+
+    public Category(String name, boolean sale) {
         super(name);
+        this.sale = sale;
     }
+
 }
