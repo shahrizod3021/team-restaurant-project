@@ -24,11 +24,14 @@ public class Zakaz extends AbsNameEntity {
 
     private boolean delivered;
 
-    @ManyToMany
-    private List<Product> products;
+    private Integer howMuch;
+
+    @ManyToOne
+    private Product products;
 
     private Date date;
 
     @ManyToOne
     private Aksiya aksiya;
+
 }

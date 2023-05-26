@@ -28,11 +28,11 @@ export const Login = () => {
                                     <div className={"form-group"}>
                                         <label htmlFor="phoneNumber">Telefon raqam</label>
                                         <input type="number" placeholder={"Telefon raqam kiriting"}
-                                               className={"form-control"} id={"phoneNumber"} name={"phoneNumber"}
+                                               className={"form-control mb-2"} id={"phoneNumber"} name={"phoneNumber"}
                                                value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}
                                         />
                                     </div>
-                                    <div className={"form-group"}>
+                                    <div className={"form-group mb-3"}>
                                         <label htmlFor="password">Parol</label>
                                         <input type="password" placeholder={"parolni kiriting"} id={"password"}
                                                name={"password"} className={"form-control"} value={password}

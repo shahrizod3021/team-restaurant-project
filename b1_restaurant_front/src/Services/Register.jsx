@@ -9,7 +9,6 @@ export const Register = () => {
     const [surname, setSurname] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [password, setPassword] = useState('')
-
     const navigate = useNavigate()
     const register = async () => {
         const data = {
@@ -57,7 +56,7 @@ export const Register = () => {
                                     <div className={"form-group"}>
                                         <label htmlFor="password">Parol</label>
                                         <input type="password" placeholder={"parol kiriting "} id={"password"}
-                                               name={"password"} className={"form-control"} value={password}
+                                               name={"password"} className={"form-control mb-4"} value={password}
                                                onChange={e => setPassword(e.target.value)}/>
                                     </div>
                                     <div className={"text-center"}>

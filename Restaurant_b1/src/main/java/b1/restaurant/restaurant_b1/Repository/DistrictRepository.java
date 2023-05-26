@@ -13,4 +13,6 @@ public interface DistrictRepository extends JpaRepository<District, Integer> {
     boolean existsDistrictByNameEqualsIgnoreCase(String name);
 
     List<District> findDistrictsByRegion_Id(Integer region_id);
+
+    List<District> findDistrictsByName(String name);
 }

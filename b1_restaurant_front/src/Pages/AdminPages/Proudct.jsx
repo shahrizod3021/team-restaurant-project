@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import axios from "axios";
 import {BASE_URL} from "../../Services/BaseUrl.js";
 import {useEffect, useState} from "react";
-import {AddProduct, DeleteCategory, DeleteProduct, EditProduct, GetColor, PhotoUpload} from "../../Services/service.js";
+import {AddProduct, DeleteProduct, EditProduct, GetColor, PhotoUpload} from "../../Services/service.js";
 import {toast} from "react-toastify";
 import {Pagenation} from "../../Component/Pagenation.jsx";
 
@@ -12,35 +12,68 @@ export const Proudct = () => {
     const [product, setProduct] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [prePage] = useState(5)
+    const [search, setSearch] = useState('')
 
     const indexOfLastData = currentPage * prePage;
     const indexOfFirstData = indexOfLastData - prePage;
     const currentData = product.slice(indexOfFirstData, indexOfLastData);
 
-    const getProduct = async () => {
-        try {
-            const res = await axios.get(BASE_URL + Apis.product + "/list")
-            setProduct(res.data)
-        } catch (err) {
 
-        }
+    const getProduct = async () => {
+        const res = await axios.get(BASE_URL + Apis.product + "/list")
+        setProduct(res.data)
     }
     useEffect(() => {
         getProduct()
     }, [])
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
+
+    const filter = product.filter(item => item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
     return (
-        <div style={{height:"100vh"}}>
-            <Productjon data={currentData}/>
-            <Pagenation totalData={product.length} perPage={prePage} paginate={paginate}/>
+        <div style={{height: "110vh"}}>
+            <div className={"mb-2"}>
+                <form className={"input-group"}>
+                    <input type="search"
+                           value={search}
+                           onChange={e => setSearch(e.target.value)}
+                           className={"form-control"}
+                           placeholder={"shu yerda qidiring"}
+                    />
+                    <span className={"btn btn-dark"}><i className={"bi-search"}></i></span>
+                </form>
+            </div>
+            {search.length === 0 ? (
+                <>
+                    <Productjon data={currentData} method={() => getProduct()}/>
+                    <Pagenation totalData={product.length} perPage={prePage} paginate={paginate}/>
+                </>
+            ) : (
+                <>
+                    {filter.length === 0 ? (
+                            <>
+                                <Productjon data={null} method={() => getProduct()}/>
+                                <div className={"veryBig col-12 mb-10 d-flex align-items-center"}>
+                                    <Pagenation totalData={product.length} perPage={prePage} paginate={paginate}/>
+                                </div>
+                            </>
+                        ) :
+                        (
+                            <>
+                                <Productjon data={filter} method={() => getProduct()}/>
+                                <div className={"veryBig col-12 mb-10 d-flex align-items-center"}>
+                                    <Pagenation totalData={filter.length} perPage={prePage} paginate={paginate}/>
+                                </div>
+                            </>
+                        )
+                    }
+                </>
+            )}
         </div>
     )
 }
 
-const Productjon = ({data}) => {
-    const [product, setProduct] = useState([])
-
+const Productjon = ({data, method}) => {
     const [id, setId] = useState('')
     const [color, setColor] = useState({})
     const [name, setName] = useState('')
@@ -52,10 +85,6 @@ const Productjon = ({data}) => {
         await GetColor(setColor, localStorage.getItem("uuid"))
     }
 
-    const getProduct = async () => {
-        const res = await axios.get(BASE_URL + Apis.product + "/list")
-        setProduct(res.data)
-    }
 
     const getCategory = async () => {
         try {
@@ -69,20 +98,9 @@ const Productjon = ({data}) => {
     useEffect(() => {
         getColor()
         getCategory()
-        getProduct()
+        method()
     }, [])
 
-
-    const uploadProductPhoto = async () => {
-        let rasm = document.getElementById("rasm").files[0]
-        const formData = new FormData()
-        formData.append("photo", rasm);
-        await PhotoUpload(formData);
-        const photoId = localStorage.getItem("productPhoto");
-        await axios.put(BASE_URL + Apis.product + "/upload/" + localStorage.getItem("productId") + "?productPhoto=" + photoId)
-        toast("Mahsulot saqlandi")
-        getProduct()
-    }
 
     const editProductPhoto = async () => {
         let rasm = document.getElementById("rasm").files[0]
@@ -90,32 +108,37 @@ const Productjon = ({data}) => {
         formData.append("photo", rasm);
         await PhotoUpload(formData);
         const photoId = localStorage.getItem("productPhoto");
-        try {
-            await axios.put(BASE_URL + Apis.product + "/upload/" + id + "?productPhoto=" + photoId)
-            toast("mahsuolot rasmi taxrirlandi")
-            await getProduct()
-        } catch (err) {
-            toast.error("rasm saqlashda hatolik")
+        if (id === null) {
+            const res = await axios.put(BASE_URL + Apis.product + "/upload/" + localStorage.getItem("productId") + "?productPhoto=" + photoId)
+            toast.success(res.data.message, {position: "top-center"})
+            method()
+        } else {
+            try {
+                await axios.put(BASE_URL + Apis.product + "/upload/" + id + "?productPhoto=" + photoId)
+                method()
+                toast.success("mahsuolot rasmi taxrirlandi", {position: "top-left"})
+            } catch (err) {
+                toast.error("rasm saqlashda hatolik")
+            }
         }
     }
 
     const addProduct = async () => {
         await AddProduct(categoryId, name, description, price)
-        await  getProduct()
     }
     const editProduct = async () => {
         await EditProduct(id, name, description, price)
         setName("")
         setDescription("")
         setPrice("")
-        await getProduct()
+        method()
     }
 
     const deleteProduct = async () => {
         await DeleteProduct(id)
         getCategory()
+        method()
         setCategoryId("")
-        getProduct()
     }
 
     const clear = () => {
@@ -125,96 +148,111 @@ const Productjon = ({data}) => {
         setCategoryId("")
     }
     return (
-        <div className={"row"} >
+        <div className={"row"}>
             <div className="col-12">
                 <div className="card" style={{backgroundColor: `${color.textColor}`}}>
-                    <div className="card-body" style={{color: `${color.bgColor}`}}>
-                        <h4 className="">Mahsulotlar jadvali</h4>
-                        <div className={"row"}>
-                            <div className="col-12">
-                                <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal"
-                                        data-bs-target="#addProduct">
-                                    Mahsulot qo'shish <i className={"bi-plus-circle"}></i>
-                                </button>
-                                <div className="table-responsive">
-                                    <table className="table ">
-                                        <thead>
-                                        <tr style={{color: `${color.bgColor}`}}>
-                                            <th className={"col-2"}> Rasm</th>
-                                            <th className={"col-2"}> Id</th>
-                                            <th className={"col-2"}> Nomi</th>
-                                            <th className={"col-2"}> Tavfsiloti</th>
-                                            <th className={"col-2"}> Narxi</th>
-                                            <th className={"col-2"}> Jarayonlar</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {data.map((item, i) => (
-                                            <>
-                                                <tr style={{color: `${color.bgColor}`}}>
-                                                    <td><img className={"rounded-circle me-2"} width={"30"}
-                                                             height={"30"} src={Apis.getPhoto + item.photoId}
-                                                             alt=""/>
-                                                        <button style={{
-                                                            border: "0",
-                                                            color: "#f1c40f",
-                                                            backgroundColor: "transparent"
-                                                        }} onClick={() => setId(item.id)} data-bs-toggle="modal"
-                                                                data-bs-target="#editProductPhoto"><i
-                                                            className={"bi-pencil"}></i></button>
-                                                    </td>
-                                                    <td>{i + 1}</td>
-                                                    <td>
-                                                        <span className={"me-3 text-uppercase"}>{item.name}</span>
-                                                        <button style={{
-                                                            border: "0",
-                                                            color: "#f1c40f",
-                                                            backgroundColor: "transparent"
-                                                        }} onClick={() => setId(item.id)} data-bs-toggle="modal"
-                                                                data-bs-target="#editName"><i
-                                                            className={"bi-pencil"}></i></button>
-                                                    </td>
-                                                    <td>
-                                                        {item.description}
-                                                        <button style={{
-                                                            border: "0",
-                                                            color: "#f1c40f",
-                                                            backgroundColor: "transparent"
-                                                        }} onClick={() => setId(item.id)} data-bs-toggle="modal"
-                                                                data-bs-target="#editDescription"><i
-                                                            className={"bi-pencil"}></i></button>
-                                                    </td>
-                                                    <td>
+                    <div className={'card-header'}>
+                        <h4 style={{color: `${color.bgColor}`}}>Mahsulotlar jadvali</h4>
+                        <div className="col-12">
+                            <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addProduct" onClick={() => setId(null)}>
+                                Mahsulot qo'shish <i className={"bi-plus-circle"}></i>
+                            </button>
+                        </div>
+                        <div className="card-body" style={{color: `${color.bgColor}`}}>
+                            <div className="table-responsive">
+                                <table className="table">
+                                    {data === null ? (
+                                        <>
+                                            <h3 className={"text-center text-danger"}>hech narsa topilamdi</h3>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <thead>
+                                            <tr style={{color: `${color.bgColor}`}}>
+                                                <th className={"col-2"}> Rasm</th>
+                                                <th className={"col-2"}> Id</th>
+                                                <th className={"col-2"}> Nomi</th>
+                                                <th className={"col-2"}> Tavfsiloti</th>
+                                                <th className={"col-2"}> Narxi</th>
+                                                <th className={"col-2"}> Jarayonlar</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {data.map((item, i) => (
+                                                <>
+                                                    <tr style={{color: `${color.bgColor}`}}>
+                                                        <td><img className={"rounded-circle me-2"} width={"30"}
+                                                                 height={"30"} src={Apis.getPhoto + item.photoId}
+                                                                 alt=""/>
+                                                            <button style={{
+                                                                border: "0",
+                                                                color: "#f1c40f",
+                                                                backgroundColor: "transparent"
+                                                            }} onClick={() => setId(item.id)} data-bs-toggle="modal"
+                                                                    data-bs-target="#editProductPhoto"><i
+                                                                className={"bi-pencil"}></i></button>
+                                                        </td>
+                                                        <td>{i + 1}</td>
+                                                        <td>
+                                                                <span
+                                                                    className={"me-3 text-uppercase"}>{item.name}</span>
+                                                            <button style={{
+                                                                border: "0",
+                                                                color: "#f1c40f",
+                                                                backgroundColor: "transparent"
+                                                            }} onClick={() => setId(item.id)} data-bs-toggle="modal"
+                                                                    data-bs-target="#editName"><i
+                                                                className={"bi-pencil"}></i></button>
+                                                        </td>
+                                                        <td>
+                                                            {item.description.length > 10 ? (
+                                                                <>
+                                                                    {item.description.substring(0, 15)}...
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {item.description}
+                                                                </>
+                                                            )}
+                                                            <button style={{
+                                                                border: "0",
+                                                                color: "#f1c40f",
+                                                                backgroundColor: "transparent"
+                                                            }} onClick={() => setId(item.id)} data-bs-toggle="modal"
+                                                                    data-bs-target="#editDescription"><i
+                                                                className={"bi-pencil"}></i></button>
+                                                        </td>
+                                                        <td>
                                                             <span style={{
                                                                 color: "gold",
                                                                 fontStyle: "italic"
                                                             }}>{item.price}</span>so'm <button style={{
-                                                        border: "0",
-                                                        color: "#f1c40f",
-                                                        backgroundColor: "transparent"
-                                                    }} onClick={() => setId(item.id)} data-bs-toggle="modal"
+                                                            border: "0",
+                                                            color: "#f1c40f",
+                                                            backgroundColor: "transparent"
+                                                        }} onClick={() => setId(item.id)} data-bs-toggle="modal"
                                                                                                data-bs-target="#editPrice">
-                                                        <i
-                                                            className={"bi-pencil"}></i></button>
-                                                    </td>
-                                                    <td>
-                                                        <div className={"categoryAction "}>
-                                                            <button className={"btn btn-danger me-2"}
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#deleteProduct"
-                                                                    onClick={() => setId(item.id)}><i
-                                                                className={"bi-trash"}></i></button>
-                                                            <Link to={"/product/" + item.id}
-                                                                  className={"btn btn-primary"}><i
-                                                                className={"bi-eye"}></i></Link>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                            <i
+                                                                className={"bi-pencil"}></i></button>
+                                                        </td>
+                                                        <td>
+                                                            <div className={"categoryAction "}>
+                                                                <button className={"btn btn-danger me-2"}
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#deleteProduct"
+                                                                        onClick={() => setId(item.id)}><i
+                                                                    className={"bi-trash"}></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            ))}
+                                            </tbody>
+                                        </>
+                                    )}
+                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -231,7 +269,19 @@ const Productjon = ({data}) => {
                         </div>
                         <div className="modal-body">
                             <form>
-                                <label htmlFor="name">
+                                <label htmlFor="price">
+                                    Kategoriyani tanlang
+                                </label>
+                                <select name="categoryId" id="categoryId" value={categoryId}
+                                        onChange={e => setCategoryId(e.target.value)} className={"form-select"}>
+                                    <option value={"0"} className={"disabled"}>tanlang</option>
+                                    {category.map((item) => (
+                                        <>
+                                            <option value={item.id}>{item.name}</option>
+                                        </>
+                                    ))}
+                                </select>
+                                <label htmlFor="name" className={"mt-3"}>
                                     Mahsulot nomi
                                 </label>
                                 <input type="text" className={"form-control "} id={"name"} name={"name"}
@@ -249,18 +299,8 @@ const Productjon = ({data}) => {
                                 <input type="number" className={"form-control "} id={"price"} name={"price"}
                                        placeholder={"Mahsulot narxini kiriting"} value={price}
                                        onChange={e => setPrice(e.target.value)}/>
-                                <label htmlFor="price" className={"mt-3"}>
-                                    Kategoriyani tanlang
-                                </label>
-                                <select name="categoryId" id="categoryId" value={categoryId}
-                                        onChange={e => setCategoryId(e.target.value)} className={"form-select"}>
-                                    <option value={"0"} className={"disabled"}>tanlang</option>
-                                    {category.map((item) => (
-                                        <>
-                                            <option value={item.id}>{item.name}</option>
-                                        </>
-                                    ))}
-                                </select>
+
+
                             </form>
                         </div>
                         <div className="modal-footer">
@@ -295,37 +335,49 @@ const Productjon = ({data}) => {
                         </div>
                         <div className="modal-body">
                             <div className={"col-12"} style={{height: '16%', borderStyle: 'dashed'}}>
-                                {product.map((item) => (
-                                    (item.id === id ? (
-                                        <>
-                                            {item.photoId === null ? (
+                                {data === null ? (
+                                    <>
+                                    </>
+                                ) : (
+                                    <>
+                                        {data.map((item) => (
+                                            (item.id === id ? (
                                                 <>
-                                                    <label className={"w-100 d-flex flex-column"}
-                                                           style={{height: '100%'}} htmlFor={"rasm"}>
-                                                        <h2 className={"text-center"}>Rasmni joylang</h2>
-                                                        <i className="bi bi-cloud-arrow-up"
-                                                           style={{textAlign: 'center', fontSize: '52px'}}/>
-                                                    </label>
-                                                    <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                                           onChange={(e) => editProductPhoto()}/>
+                                                    {item.photoId === null ? (
+                                                        <>
+                                                            <label className={"w-100 d-flex flex-column"}
+                                                                   style={{height: '100%'}} htmlFor={"rasm"}>
+                                                                <h2 className={"text-center"}>Rasmni joylang</h2>
+                                                                <i className="bi bi-cloud-arrow-up"
+                                                                   style={{textAlign: 'center', fontSize: '52px'}}/>
+                                                            </label>
+                                                            <input type="file" className={"d-none"} id={"rasm"}
+                                                                   name={"rasm"}
+                                                                   onChange={() => editProductPhoto()}
+                                                                   required/>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <label className={"w-100 d-flex flex-column"}
+                                                                   style={{height: '100%'}} htmlFor={"rasm"}>
+                                                                <h2 className={"text-center"}>Rasmni taxrirlang</h2>
+                                                                <img src={Apis.getPhoto + item.photoId} alt=""/>
+                                                            </label>
+                                                            <input type="file" className={"d-none"} id={"rasm"}
+                                                                   name={"rasm"}
+                                                                   onChange={() => editProductPhoto()}
+                                                                   required/>
+                                                        </>
+                                                    )}
                                                 </>
                                             ) : (
                                                 <>
-                                                    <label className={"w-100 d-flex flex-column"}
-                                                           style={{height: '100%'}} htmlFor={"rasm"}>
-                                                        <h2 className={"text-center"}>Rasmni taxrirlang</h2>
-                                                        <img src={Apis.getPhoto + item.photoId} alt=""/>
-                                                    </label>
-                                                    <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                                           onChange={(e) => editProductPhoto()}/>
                                                 </>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                        </>
-                                    ))
-                                ))}
+                                            ))
+                                        ))}
+                                    </>
+                                )}
+
                             </div>
                         </div>
                     </div>
@@ -347,7 +399,7 @@ const Productjon = ({data}) => {
                                     <i className={"text-center  bi-cloud-upload"} style={{fontSize: "50px"}}></i>
                                 </label>
                                 <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                       onChange={(e) => uploadProductPhoto()}/>
+                                       onChange={() => editProductPhoto()} required/>
                             </div>
                         </div>
                     </div>

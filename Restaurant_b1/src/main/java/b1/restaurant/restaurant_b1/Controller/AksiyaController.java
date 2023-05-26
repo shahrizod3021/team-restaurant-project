@@ -5,6 +5,7 @@ import b1.restaurant.restaurant_b1.Entity.Category;
 import b1.restaurant.restaurant_b1.Entity.Product;
 import b1.restaurant.restaurant_b1.Payload.ReqSale;
 import b1.restaurant.restaurant_b1.Payload.ApiResponse;
+import b1.restaurant.restaurant_b1.Payload.ResSale;
 import b1.restaurant.restaurant_b1.Payload.SelectDto;
 import b1.restaurant.restaurant_b1.Repository.AksiyaRepository;
 import b1.restaurant.restaurant_b1.Repository.CategoryRepository;
@@ -15,12 +16,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@CrossOrigin("http://localhost:5173/")
+@CrossOrigin()
 @RestController
 @RequestMapping("/api/sale")
 @RequiredArgsConstructor
@@ -36,6 +34,34 @@ public class AksiyaController {
         return ResponseEntity.ok(all);
     }
 
+    @GetMapping("/{id}")
+    public HttpEntity<?> getOne(@PathVariable Integer id){
+        List<Aksiya> aksiyas = new ArrayList<>();
+        for (Aksiya aksiya : aksiyaRepository.findAll()) {
+            for (Product product : aksiya.getProducts()) {
+                if (product.getId().equals( id)){
+                    aksiyas.add(aksiya);
+                }
+            }
+        }
+        return ResponseEntity.ok(aksiyas);
+    }
+
+    @GetMapping("/today")
+    public HttpEntity<?> getTodaysSale() {
+        Date date = new Date();
+        List<Aksiya> aksiyas = new ArrayList<>();
+        for (Aksiya aksiya : aksiyaRepository.findAll()) {
+            if (date.getYear() == aksiya.getSana().getYear()) {
+                if (date.getMonth() == aksiya.getSana().getMonth()) {
+                    if (date.getDate() == aksiya.getSana().getDate()) {
+                        aksiyas.add(aksiya);
+                    }
+                }
+            }
+        }
+        return ResponseEntity.ok(aksiyas);
+    }
 
 
     @PostMapping
@@ -49,16 +75,19 @@ public class AksiyaController {
             productRepository.save(product);
         }
         double allPrice = 0;
-        double pastPrice  = 0;
+        double pastPrice = 0;
+        Date date = new Date();
         Aksiya build = Aksiya.builder()
                 .foyiz(reqSale.getFoiz())
                 .active(true)
                 .products(products)
+                .sana(date)
                 .foyiz(reqSale.getFoiz())
                 .build();
         for (Product product : products) {
             allPrice = allPrice + product.getPrice();
             pastPrice = pastPrice + product.getPrice();
+
         }
         double salesPrice = allPrice * reqSale.getFoiz() / 100;
         double allSalesPrice = allPrice - salesPrice;
@@ -75,5 +104,18 @@ public class AksiyaController {
         aksiya.setPhotoId(photoId);
         aksiyaRepository.save(aksiya);
         return ResponseEntity.ok(new ApiResponse("Aksiya saqlandi", true));
+    }
+
+    @PutMapping("/{id}")
+    public HttpEntity<?> onOff (@PathVariable Integer id){
+        Aksiya aksiya = aksiyaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("geSale"));
+        if (aksiya.isActive()) {
+            aksiya.setActive(false);
+            aksiyaRepository.save(aksiya);
+            return ResponseEntity.ok(new ApiResponse("off", true));
+        }
+        aksiya.setActive(true);
+        aksiyaRepository.save(aksiya);
+        return ResponseEntity.ok(new ApiResponse("on", true));
     }
 }

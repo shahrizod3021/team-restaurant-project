@@ -3,12 +3,10 @@ package b1.restaurant.restaurant_b1.Service;
 import b1.restaurant.restaurant_b1.Entity.Colors;
 import b1.restaurant.restaurant_b1.Entity.Enums.RoleName;
 import b1.restaurant.restaurant_b1.Entity.Restaurant;
+import b1.restaurant.restaurant_b1.Entity.Savatcha;
 import b1.restaurant.restaurant_b1.Entity.User;
 import b1.restaurant.restaurant_b1.Payload.*;
-import b1.restaurant.restaurant_b1.Repository.AuthRepository;
-import b1.restaurant.restaurant_b1.Repository.ColorRepository;
-import b1.restaurant.restaurant_b1.Repository.RestaurantRepository;
-import b1.restaurant.restaurant_b1.Repository.RoleRepo;
+import b1.restaurant.restaurant_b1.Repository.*;
 import b1.restaurant.restaurant_b1.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +33,10 @@ public class AuthService implements UserDetailsService {
 
     private final RoleRepo roleRepo;
 
-    private final ColorRepository colorRepository;
 
     private final RestaurantRepository restaurantRepository;
+
+    private final SavatchaRepository savatchaRepository;
 
     @Autowired
     public PasswordEncoder passwordEncoder() {
@@ -56,12 +55,15 @@ public class AuthService implements UserDetailsService {
     public User register(ReqRegister register) {
         if (!authRepository.existsUserByPhoneNumber(register.getPhoneNumber())) {
             Restaurant restaurant = restaurantRepository.findById(1).get();
+            Savatcha build = Savatcha.builder().aksiya(null).product(null).build();
+            build.setName("Basket");
+            Savatcha save = savatchaRepository.save(build);
             User user = new User(
                     register.getName(),
                     register.getSurname(),
                     register.getPhoneNumber(),
                     passwordEncoder().encode(register.getPassword()),
-                    roleRepo.findById(1).get());
+                    roleRepo.findById(1).get(), save);
             restaurant.getUserSize().add(user);
             return authRepository.save(user);
         }
@@ -79,6 +81,7 @@ public class AuthService implements UserDetailsService {
                         .password(user.getPassword())
                         .zakazList(user.getZakazList())
                         .photoId(user.getPhotoId())
+                        .savatcha(user.getSavatchas())
                         .build();
             }
         }

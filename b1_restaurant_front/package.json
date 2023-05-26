@@ -12,17 +12,21 @@
     "@mobiscroll/cli": "^1.10.1",
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
+    "copy-to-clipboard": "^3.3.3",
+    "html2canvas": "^1.4.1",
     "mdb-ui-kit": "^6.3.0",
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-multi-carousel": "^2.8.3",
     "react-router-dom": "^6.11.1",
     "react-select": "^5.7.3",
     "react-toastify": "^9.1.2",
     "reactstrap": "^9.1.9",
-    "sass": "^1.62.1"
+    "sass": "^1.62.1",
+    "use-react-screenshot": "^3.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

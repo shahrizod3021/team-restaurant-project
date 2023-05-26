@@ -11,5 +11,10 @@ export const Apis = {
     product: '/product',
     sale: '/sale',
     salProducts: '/sale/products',
-    filial: '/filial/'
+    filial: '/filial/',
+    search: '/search',
+    order: '/order',
+    basket: '/basket',
+    history: '/history',
+    message:'/message'
 }

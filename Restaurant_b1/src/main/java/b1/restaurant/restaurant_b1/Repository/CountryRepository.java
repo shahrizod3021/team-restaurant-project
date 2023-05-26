@@ -5,8 +5,12 @@ import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
+
 @CrossOrigin
 public interface CountryRepository extends JpaRepository<Country, Integer> {
 
     boolean existsCountryByNameEqualsIgnoreCase(String name);
+
+    List<Country> findCountriesByName(String name);
 }

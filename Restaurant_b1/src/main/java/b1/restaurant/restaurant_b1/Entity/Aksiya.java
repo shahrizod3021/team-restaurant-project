@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,4 +30,8 @@ public class Aksiya extends AbsNameEntity {
     private boolean active;
 
     private double pastPrice;
+
+
+    private Date sana;
+
 }

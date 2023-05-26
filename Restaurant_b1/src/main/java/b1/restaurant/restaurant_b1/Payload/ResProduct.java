@@ -17,5 +17,5 @@ public class ResProduct {
     private double price ;
     private String desciption;
     private UUID photoId;
-
+    private boolean sale;
 }

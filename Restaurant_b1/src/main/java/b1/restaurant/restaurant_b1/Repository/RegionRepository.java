@@ -13,4 +13,6 @@ public interface RegionRepository extends JpaRepository<Region, Integer> {
     boolean existsRegionByNameEqualsIgnoreCase(String name);
 
     List<Region> findRegionByCountries_Id(Integer countries_id);
+
+    List<Region> findRegionByName(String name);
 }

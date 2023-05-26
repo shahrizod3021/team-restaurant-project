@@ -1,4 +1,40 @@
 
+.div {
+    position: relative;
+    width: 70%;
+    display: flex;
+    overflow: hidden;
+    padding: 40px;
+}
+.div .span {
+    position: absolute;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    filter: drop-shadow(0 0 10px #f60000);
+    border-radius: 50%;
+    animation: notleft 3s ease infinite;
+}
+.span:nth-child(2) {
+    animation-delay: .4s;
+}
+.span:nth-child(3) {
+    animation-delay: .5s;
+}
+.span:nth-child(4) {
+    animation-delay: .6s;
+}
+.span:nth-child(5) {
+    animation-delay: .7s;
+}
+@keyframes notleft{
+    50% {
+        left: 50%;
+    }
+    100% {
+        left: 120%;
+    }
+}
 *{
     box-sizing: border-box;
     font-family: sans-serif;
@@ -11,6 +47,64 @@ body {
         padding-left: 240px;
     }
 }
+.search-box{
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+}
+.input-search{
+    height: 50px;
+    width: 50px;
+    border-style: none;
+    font-size: 18px;
+    letter-spacing: 2px;
+    outline: none;
+    border-radius: 25px;
+    transition: all .5s ease-in-out;
+    background-color: #22a6b3;
+    padding: 10px 40px 10px 10px;
+    color: #000000;
+}
+.input-search::placeholder{
+    color: rgba(16, 16, 16, 0.5);
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 100;
+}
+.btn-search{
+    width: 50px;
+    height: 50px;
+    border-style: none;
+    font-size: 20px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    color: #1f1d1d;
+    background-color:transparent;
+    pointer-events: painted;
+}
+
+
+.btn-search:focus ~ .input-search{
+    width: 300px;
+    border-radius: 0;
+    background-color: transparent;
+    border-bottom:1px solid rgba(3, 3, 3, 0.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.input-search:focus{
+    width: 300px;
+    border-radius: 0;
+    background-color: transparent;
+    border-bottom:1px solid rgba(0, 0, 0, 0.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+
+
+
 
 /* Sidebar */
 .sidebar {
@@ -24,6 +118,9 @@ body {
     z-index: 600;
 }
 
+.searchInFilial{
+    margin-left: 800px;
+}
 
 
 @media (max-width: 991.98px) {
@@ -65,8 +162,7 @@ body {
     min-height: 100vh;
 }
 .banner {
-    background: url(banner.jpg) no-repeat center top;
-    background-attachment: fixed;
+    background: url(banner.jpg) no-repeat fixed center top;
     background-size: cover;
     height: 100vh;
     min-height: 100%;
@@ -152,11 +248,6 @@ body {
     overflow: hidden;
 }
 
-
-
-.form-group {
-    margin-bottom: 1rem;
-}
 .card .card-title {
     color: #ffffff;
     margin-bottom: 1.125rem;
@@ -301,7 +392,16 @@ body {
     border-radius: 50px;
 
 }
+.oneCategory{
+    margin: 50px 150px;
+    width: 80%;
+}
 
+.oneProduct:hover {
+    transition: 0.4s;
+    box-shadow: 1px 1px 10px 1px black;
+    border-radius: 5px;
+}
 
 @media (max-width: 992px){
     .page-body-wrapper {
@@ -312,8 +412,96 @@ body {
     margin-bottom: 20px;
 }
 
+.ProductCard{
+    margin-left: 100px;
+}
+.salejon{
+    transform: rotateZ(40deg);
+    background-color: transparent;
+    position: absolute;
+    right: 170px;
+    top: 650px;
+}
+
+.MediaCard{
+    display: none;
+}
+.mobileUserFooter{
+    display: none;
+}
+.myAccount{
+    width: 70%;
+}
+
+.accountImg{
+    width: 50%;
+    height: 50vh;
+}
+.descUserFooter{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.basketSearch{
+    width: 70%;
+    margin-left: 200px;
+    margin-bottom: 20px;
+}
+
+.basketLabel{
+    margin-left: 400px;
+}
+
+.contactForm{
+    padding: 100px;
+    border: 1px solid red;
+}
+
 @media only screen and (max-width: 464px){
-    .categoryAction{
+    .contactForm{
+        margin-top: 50px;
+    }
+    .contactLabel{
+        margin-left: 150px;
+        margin-bottom: 10px;
+    }
+    .basketSearch{
+        width: 100%;
+        margin-left: 0;
+    }
+    .basketLabel{
+        margin-left: 110px;
+        margin-bottom: 10px;
+    }
+    .myAccount{
+        width: 100%;
+    }
+    .accountImg{
+        height: auto;
+    }
+    .mobileUserFooter{
+        position: fixed;
+        bottom: 70px;
+        display: flex;
+        background-color: goldenrod;
+        width: 100%;
+        padding-left: 20px;
+    }
+
+    .mobileItem{
+        padding: 10px 50px;
+        font-size: 20px;
+        color: #fff;
+    }
+    .salejon{
+        top: 440px;
+        right: -10px;
+        transform: rotateZ(90deg);
+        width: 20%;
+    }
+    .Action{
         display: flex;
     }
     .registerjon .card{
@@ -340,6 +528,9 @@ body {
         display: block;
     }
 
+    .descUserFooter{
+        display: none;
+    }
     .descFooter{
         display: none;
     }
@@ -368,6 +559,18 @@ body {
    }
    .navbarCategory{
        margin-bottom: 10px;
+   }
+
+   .oneCategory{
+       margin: 30px 0;
+       height: 30vh;
+       width: 100%;
+   }
+   .ProductCard{
+       display: none;
+   }
+   .MediaCard{
+       display: block;
    }
 }
 

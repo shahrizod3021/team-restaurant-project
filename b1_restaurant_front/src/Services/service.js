@@ -22,7 +22,6 @@ export const GetOneUser = async (id, setUser) => {
     } catch (err) {
     }
 }
-
 export const GetColor = async (setColor, id) => {
     try {
         const res = await axios.get(BASE_URL + Apis.color + "/" + id)
@@ -43,20 +42,118 @@ export const PhotoUpload = async (data) => {
             localStorage.setItem("salePhoto", res.data)
         }
     } catch (err) {
-        toast.error("xatolik")
+        toast.error("rasm saqalshda hatolik")
+    }
+}
+
+export const EditUser = async (id,data) => {
+    if (data.name.trim().length === 0){
+        data.name = "";
+    }
+    if (data.surname.trim().length === 0){
+        data.surname = "";
+
+    }
+    if (data.phoneNumber.trim().length === 0){
+        data.phoneNumber = "";
+
+    }
+    if (data.password.trim().length === 0){
+        data.password = "";
+    }
+    if (data.name.trim().length === 0 && data.surname.trim().length === 0 && data.password.trim().length === 0 && data.phoneNumber.trim().length === 0){
+        return toast.warning("ma'lumot kiritmadingiz", {position: "top-left"})
+    }
+    try {
+        const res = await axios.put(BASE_URL + Apis.auth  + "/" + id, data)
+        if (resStatus(res.status)){
+            return toast.success(res.data.message);
+        }
+    }catch (err){
+        toast.error("Taxrirlashda hatolik")
     }
 }
 
 export const AddProduct = async (id, name, description, price,) => {
     try {
         const res = await axios.post(BASE_URL + Apis.product + "?name=" + name + "&description=" + description + "&price=" + price + "&categoryId=" + id)
-        console.log(res)
         localStorage.setItem("productId", res.data.id)
     } catch (err) {
         toast.error("Mahsulotni qo'shishda hatolik")
     }
 }
 
+export const Search = async (name) => {
+    try {
+        const res = await axios.post(BASE_URL + Apis.search + "?query=" + name)
+        if (res.data.categoryId !== null) {
+            localStorage.setItem("searchPath", "/category/" + res.data.categoryId)
+            localStorage.setItem("searchItem", res.data.categoryId)
+        } else if (res.data.products != null) {
+            localStorage.setItem("searchPath", res.data.path)
+        }
+        return res.data.products
+    } catch (err) {
+        toast.error("qidirishda hatolik")
+    }
+}
+
+export const Ordering = async (id, howMuch, price, productId, aksiyaId) => {
+    if (productId === 0) {
+        productId = 0
+    }
+    if (aksiyaId === 0) {
+        aksiyaId = 0;
+    }
+    try {
+        const res = await axios.post(BASE_URL + Apis.order + "?id=" + id + "&howMuch="+howMuch + "&allPrice=" + price + "&product=" + productId + "&sale=" + aksiyaId)
+        toast.success(res.data.message, {position : "top-center"})
+    } catch (err) {
+        toast.error("zakaz qilishda hatolik", {position: "top-center"})
+    }
+}
+
+export const GetHistory = async (setData) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.history + "/list")
+        setData(res.data)
+    }catch (err){
+        toast.error("Arxivlarni olib kelib bo'lmadi")
+    }
+}
+
+export const AddToBasket = async (uuid, productId, saleId) => {
+    try {
+        const res = await axios.post(BASE_URL + Apis.basket + "?uuid=" + uuid + "&product=" + productId + "&sale="+ saleId)
+        if (resStatus(res.status)){
+            return toast.success(res.data.message, {position: "top-center"})
+        }
+    }catch (err){
+        toast.warning(err.response.data.message, {position:"top-center"})
+    }
+}
+export const GetBasket = async (id, setData) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.basket + "/" + id)
+        setData(res.data)
+    }catch (err){
+
+    }
+}
+export const DeleteFromBasket = async(uuid, productId, saleId) =>{
+    try {
+        const res =await axios.delete(BASE_URL +Apis.basket + "?userId=" + uuid + "&productId=" + productId + "&saleId=" + saleId)
+        if (resStatus(res.status)){
+            return toast.dark(res.data.message)
+        }
+    }catch (err){
+        toast.error(err.message)
+    }
+}
+export const GetCategory =async () => {
+      const res = await axios.get(BASE_URL + Apis.category + "/list")
+    return res.data
+}
 
 export const DeleteProduct = async (id) => {
     try {
@@ -83,7 +180,6 @@ export const EditProduct = async (id, name, description, price) => {
             toast.success(res.data.message)
         }
     } catch (err) {
-        console.log(err)
         toast.error("Mahsulotni taxrirlashda hatolik")
     }
 
@@ -145,7 +241,49 @@ export const GetRestaurant = async (setRestaurant) => {
         const res = await axios.get(BASE_URL + Apis.restaurant)
         setRestaurant(res.data);
     } catch (err) {
-        toast.error("internal error. Status code 500")
+    }
+}
+
+export const GetProduct = async (setData) =>{
+    try {
+        const res = await axios.get(BASE_URL + Apis.product + "/list")
+        setData(res.data)
+    }catch (err){
+    }
+}
+
+export const GetOrder = async (setData) => {
+    try {
+        const res =await axios.get(BASE_URL + Apis.order + "/ordered")
+        setData(res.data)
+    }catch (err){
+
+    }
+}
+export const GetUnOrder = async (setData) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.order + "/list")
+        setData(res.data)
+    }catch (err){
+
+    }
+}
+
+export const GetSale = async (setData) =>{
+    try {
+        const res = await axios.get(BASE_URL + Apis.sale + "/list")
+        setData(res.data)
+    }catch (err){
+
+    }
+}
+
+export const GetMessage = async (setData) => {
+    try {
+        const res = await axios.get(BASE_URL + Apis.message + "/list")
+        setData(res.data)
+    }catch (err){
+
     }
 }
 
@@ -194,6 +332,7 @@ export const Registerjon = async (data) => {
         if (resStatus(res.status)) {
             localStorage.setItem("uuid", res.data.user.id)
             localStorage.setItem("regyol", res.data.path)
+            localStorage.setItem("pathjon",res.data.path)
             return toast("registratsiyadan muvaffaqiyatli o'tdingiz")
         }
     } catch (err) {

@@ -9,82 +9,98 @@ import {Link, useNavigate} from "react-router-dom";
 import {Pagenation} from "../../Component/Pagenation.jsx";
 
 export const Category = () => {
-    const [category, setCategory] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [prePage] = useState(5)
 
-    const indexOfLastData = currentPage * prePage;
-    const indexOfFirstData = indexOfLastData - prePage;
-    const currentData = category.slice(indexOfFirstData, indexOfLastData);
-
+    const [category, setCategory] = useState([])
+    const [color, setColor] = useState({})
+    const getColor = async () => {
+        await GetColor(setColor, localStorage.getItem("uuid"))
+    }
     const getCategory = async () => {
         const res = await axios.get(BASE_URL + Apis.category + "/list")
         setCategory(res.data);
     }
 
     useEffect(() => {
+        getColor()
         getCategory()
     }, [])
+
+    const indexOfLastData = currentPage * prePage;
+    const indexOfFirstData = indexOfLastData - prePage;
+    const currentData = category.slice(indexOfFirstData, indexOfLastData);
     const paginate = (pageNumber) => setCurrentPage(pageNumber)
+    const [search, setSearch] = useState('')
+    const filter = category.filter(item => item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
     return (
-        <div>
-            <Pagenation totalData={category.length} perPage={prePage}  paginate={paginate}/>
-            <CategoryJon data={currentData} method={() => getCategory()} />
+        <div style={{height: "110vh"}}>
+            <form className={"mb-2 input-group"}>
+                <input type="search"
+                       value={search}
+                       onChange={e => setSearch(e.target.value)}
+                       className={"form-control"}
+                       placeholder={"shu yerda qidiring"}
+                />
+            </form>
+            {search.length === 0 ? (
+                <>
+                    <CategoryJon data={currentData} color={color} getCategory={() => getCategory()}/>
+                    <Pagenation totalData={category.length} perPage={prePage} paginate={paginate}/>
+                </>
+            ) : (
+                <>
+                    {filter.length === 0 ? (
+                        <>
+                            <CategoryJon data={null} color={color} getCategory={() => getCategory()}/>
+                            <Pagenation totalData={category.length} perPage={prePage} paginate={paginate}/>
+                        </>
+                    ) : (
+                        <>
+                            <CategoryJon data={filter} color={color} getCategory={() => getCategory()}/>
+                            <Pagenation totalData={filter.length} perPage={prePage} paginate={paginate}/>
+                        </>
+                    )}
+                </>
+            )}
+
         </div>
     )
 }
 
-const CategoryJon = ({data, method}) => {
+const CategoryJon = ({data, color, getCategory}) => {
     const [name, setName] = useState('')
     const [id, setId] = useState('')
-    const [color, setColor] = useState({})
-    const getColor = async () => {
-        await GetColor(setColor, localStorage.getItem("uuid"))
-    }
+    const [choose, setChoose] = useState('')
 
-    useEffect(() => {
-        getColor()
-        method()
-    }, [])
-
-    const uploadCategoryPhoto = async () => {
+    const categoryPhoto = async () => {
         let rasm = document.getElementById("rasm").files[0]
         const formData = new FormData()
         formData.append("photo", rasm);
         await PhotoUpload(formData);
         const photoId = localStorage.getItem("categoryPhoto");
-        try {
-            const res = await axios.put(BASE_URL + Apis.category + "/upload/" + localStorage.getItem("categoryId") + "?categoryPhoto=" + photoId)
-            toast("Categoriya saqlandi")
-            method()
-        } catch (err) {
-            toast.error("Ushbu nomdagi categoriya bizda mavjud")
+        if (choose === "add") {
+            try {
+                await axios.put(BASE_URL + Apis.category + "/upload/" + localStorage.getItem("categoryId") + "?categoryPhoto=" + photoId)
+                getCategory()
+                toast("Category saqalandi", {position: "top-center"})
+            } catch (err) {
+                toast.error("Ushbu nomdagi categoriya bizda mavjud", {position: "top-center"})
+            }
         }
-    }
-
-    const editCategoryPhoto = async () => {
-        let rasm = document.getElementById("rasm").files[0]
-        const formData = new FormData()
-        formData.append("photo", rasm);
-        await PhotoUpload(formData);
-        const photoId = localStorage.getItem("categoryPhoto");
-        try {
+        if (choose === "edit") {
             const res = await axios.put(BASE_URL + Apis.category + "/upload/" + id + "?categoryPhoto=" + photoId)
-            toast("categoriya rasmi taxrirlandi")
-            setTimeout(() => (
-                window.location.reload()
-            ), 2000)
-        } catch (err) {
-            toast.error("rasm saqlashda hatolik")
+            toast.success(res.data.message, {position: "top-center"})
+            getCategory()
         }
     }
+
 
     const addCategoery = async () => {
         const data = {
             name
         }
         await AddCategory(data)
-        method()
     }
 
     const editCategory = async () => {
@@ -92,78 +108,99 @@ const CategoryJon = ({data, method}) => {
             name
         }
         await EditCategory(data, id)
-        method()
+        getCategory()
     }
 
     const deleteCategory = async () => {
         await DeleteCategory(id)
-        method()
+        getCategory()
+    }
+
+    const clear = () => {
+        setName("")
+        setId("")
+    }
+    const change = (id, choose) => {
+        setId(id)
+        setChoose(choose)
     }
     return (
         <div>
-            <div className={"row"} style={{height: "100vh"}}>
-                <div className="col-12 " style={{}}>
+            <div className={"row"} style={{height: "auto"}}>
+                <div className="col-12 ">
                     <div className="card" style={{backgroundColor: `${color.textColor}`}}>
                         <div className="card-body" style={{color: `${color.bgColor}`}}>
-                            <h4 className="">Kategoriyalar jadvali</h4>
+                            <h4>Kategoriyalar jadvali</h4>
                             <div className={"row"}>
                                 <div className="col-12">
                                     <button type="button" className="btn btn-primary mb-2" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal">
+                                            data-bs-target="#addModal" onClick={() => change(null, "add")}>
                                         Kategoriya yaratish <i className={"bi-plus-circle"}></i>
                                     </button>
                                     <div className="table-responsive">
                                         <table className="table ">
-                                            <thead>
-                                            <tr style={{color: `${color.bgColor}`}}>
-                                                <th className={"col-2"}> Rasm</th>
-                                                <th className={"col-2"}> Id</th>
-                                                <th className={"col-3"}> Nomi</th>
-                                                <th className={"col-3"}> Jarayonlar</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {data.map((item, i) => (
+                                            {data === null ? (
                                                 <>
-                                                    <tr style={{color: `${color.bgColor}`}}>
-                                                        <td><img className={"rounded-circle me-2"} width={"30"}
-                                                                 height={"30"} src={Apis.getPhoto + item.photoId}
-                                                                 alt=""/>
-                                                            <button style={{
-                                                                border: "0",
-                                                                color: "#f1c40f",
-                                                                backgroundColor: "transparent"
-                                                            }} onClick={() => setId(item.id)} data-bs-toggle="modal"
-                                                                    data-bs-target="#editCategoryPhoto"><i
-                                                                className={"bi-pencil"}></i></button>
-                                                        </td>
-                                                        <td>{i + 1}</td>
-                                                        <td>
-                                                            <span className={"me-3"}>{item.name}</span>
-                                                            <button style={{
-                                                                border: "0",
-                                                                color: "#f1c40f",
-                                                                backgroundColor: "transparent"
-                                                            }} onClick={() => setId(item.id)} data-bs-toggle="modal"
-                                                                    data-bs-target="#editName"><i
-                                                                className={"bi-pencil"}></i></button>
-                                                        </td>
-                                                        <td>
-                                                            <div className={"categoryAction"}>
-                                                                <button className={"btn btn-danger me-2"}
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#deleteCategory"
-                                                                        onClick={() => setId(item.id)}><i
-                                                                    className={"bi-trash"}></i></button>
-                                                                <Link to={"/category/" + item.id}
-                                                                      className={" btn btn-primary"}><i
-                                                                    className={"bi-eye"}></i></Link>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                    <h3 className={"text-center text-danger"}>hech narsa topilamdi</h3>
                                                 </>
-                                            ))}
-                                            </tbody>
+                                            ) : (
+                                                <>
+                                                    <thead>
+                                                    <tr style={{color: `${color.bgColor}`}}>
+                                                        <th className={"col-2"}> Rasm</th>
+                                                        <th className={"col-2"}> Id</th>
+                                                        <th className={"col-3"}> Nomi</th>
+                                                        <th className={"col-3"}> Jarayonlar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {data.map((item, i) => (
+                                                        <>
+                                                            <tr style={{color: `${color.bgColor}`}}>
+                                                                <td><img className={"rounded-circle me-2"} width={"30"}
+                                                                         height={"30"}
+                                                                         src={Apis.getPhoto + item.photoId}
+                                                                         alt=""/>
+                                                                    <button style={{
+                                                                        border: "0",
+                                                                        color: "#f1c40f",
+                                                                        backgroundColor: "transparent"
+                                                                    }} onClick={() => change(item.id, "edit")}
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#editCategoryPhoto"><i
+                                                                        className={"bi-pencil"}></i></button>
+                                                                </td>
+                                                                <td>{i + 1}</td>
+                                                                <td>
+                                                                    <span className={"me-3"}>{item.name}</span>
+                                                                    <button style={{
+                                                                        border: "0",
+                                                                        color: "#f1c40f",
+                                                                        backgroundColor: "transparent"
+                                                                    }} onClick={() => change(item.id, "edit")}
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#editName"><i
+                                                                        className={"bi-pencil"}></i></button>
+                                                                </td>
+                                                                <td>
+                                                                    <div className={"Action"}>
+                                                                        <button className={"btn btn-danger me-2"}
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#deleteCategory"
+                                                                                onClick={() => setId(item.id)}><i
+                                                                            className={"bi-trash"}></i></button>
+                                                                        <Link to={"/category/" + item.id}
+                                                                              className={" btn btn-primary"}><i
+                                                                            className={"bi-eye"}></i></Link>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </>
+                                                    ))}
+                                                    </tbody>
+                                                </>
+                                            )}
+
                                         </table>
                                     </div>
                                 </div>
@@ -173,9 +210,9 @@ const CategoryJon = ({data, method}) => {
                 </div>
             </div>
 
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+            <div className="modal fade" id="addModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog ">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Kategoriya yaratish</h1>
@@ -194,7 +231,7 @@ const CategoryJon = ({data, method}) => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
-                                    onClick={() => setName("")}>Yopish
+                                    onClick={() => clear()}>Yopish
                             </button>
                             {name.trim().length === 0 ? (
                                 <>
@@ -220,41 +257,53 @@ const CategoryJon = ({data, method}) => {
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Kategoriya rasmini joylash</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close" onClick={() => setName("")}></button>
+                                    aria-label="Close" onClick={() => clear()}></button>
                         </div>
                         <div className="modal-body">
                             <div className={"col-12"} style={{height: '16%', borderStyle: 'dashed'}}>
-                                {data.map((item) => (
-                                    (item.id === id ? (
-                                        <>
-                                            {item.photoId === null ? (
+                                {data === null ? (
+                                    <>
+
+                                    </>
+                                ) : (
+                                    <>
+                                        {data.map((item) => (
+                                            (item.id === id ? (
                                                 <>
-                                                    <label className={"w-100 d-flex flex-column"}
-                                                           style={{height: '100%'}} htmlFor={"rasm"}>
-                                                        <h2 className={"text-center"}>Rasmni joylang</h2>
-                                                        <i className="bi bi-cloud-arrow-up"
-                                                           style={{textAlign: 'center', fontSize: '52px'}}/>
-                                                    </label>
-                                                    <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                                           onChange={(e) => editCategoryPhoto()}/>
+                                                    {item.photoId === null ? (
+                                                        <>
+                                                            <label className={"w-100 d-flex flex-column"}
+                                                                   style={{height: '100%'}} htmlFor={"rasm"}>
+                                                                <h2 className={"text-center"}>Rasmni joylang</h2>
+                                                                <i className="bi bi-cloud-arrow-up"
+                                                                   style={{textAlign: 'center', fontSize: '52px'}}/>
+                                                            </label>
+                                                            <input type="file" className={"d-none"} id={"rasm"}
+                                                                   name={"rasm"}
+                                                                   onChange={() => categoryPhoto()} required/>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <label className={"w-100 d-flex flex-column"}
+                                                                   style={{height: '100%'}} htmlFor={"rasm"}>
+                                                                <h2 className={"text-center"}>Rasmni taxrirlang</h2>
+                                                                <img src={Apis.getPhoto + item.photoId} alt=""/>
+                                                            </label>
+                                                            <input type="file" className={"d-none"} id={"rasm"}
+                                                                   name={"rasm"}
+                                                                   onChange={() => categoryPhoto()}
+                                                                   required/>
+                                                        </>
+                                                    )}
                                                 </>
                                             ) : (
                                                 <>
-                                                    <label className={"w-100 d-flex flex-column"}
-                                                           style={{height: '100%'}} htmlFor={"rasm"}>
-                                                        <h2 className={"text-center"}>Rasmni taxrirlang</h2>
-                                                        <img src={Apis.getPhoto + item.photoId} alt=""/>
-                                                    </label>
-                                                    <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                                           onChange={(e) => editCategoryPhoto()}/>
                                                 </>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                        </>
-                                    ))
-                                ))}
+                                            ))
+                                        ))}
+                                    </>
+                                )}
+
                             </div>
                         </div>
                     </div>
@@ -262,7 +311,7 @@ const CategoryJon = ({data, method}) => {
             </div>
             <div className="modal fade" id="uploadCategoryPhoto" tabIndex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Kategoriya rasmini joylash</h1>
@@ -276,7 +325,7 @@ const CategoryJon = ({data, method}) => {
                                     <i className={"text-center  bi-cloud-upload"} style={{fontSize: "50px"}}></i>
                                 </label>
                                 <input type="file" className={"d-none"} id={"rasm"} name={"rasm"}
-                                       onChange={(e) => uploadCategoryPhoto()}/>
+                                       onChange={() => categoryPhoto()}/>
                             </div>
                         </div>
                     </div>
@@ -305,8 +354,7 @@ const CategoryJon = ({data, method}) => {
                             </button>
                             {name.trim().length === 0 ? (
                                 <>
-                                    <button type="button" className="btn btn-primary disabled" data-bs-toggle="modal"
-                                            data-bs-target="#uploadCategoryPhoto">Saqlash
+                                    <button type="button" className="btn btn-primary disabled">Saqlash
                                     </button>
                                 </>
                             ) : (
@@ -346,6 +394,5 @@ const CategoryJon = ({data, method}) => {
                 </div>
             </div>
         </div>
-
     )
 }

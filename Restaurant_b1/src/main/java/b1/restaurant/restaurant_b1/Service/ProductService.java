@@ -24,6 +24,7 @@ public class ProductService {
                     .price(product.getPrice())
                     .desciption(product.getDescription())
                     .photoId(product.getPhotoId())
+                    .sale(product.isSale())
                     .build();
             resProducts.add(build);
         }

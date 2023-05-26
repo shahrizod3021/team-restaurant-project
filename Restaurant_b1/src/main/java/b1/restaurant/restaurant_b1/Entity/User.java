@@ -35,6 +35,9 @@ public class User extends AbsEntity implements UserDetails {
     private Colors colors;
 
     @ManyToOne
+    private Savatcha savatchas;
+
+    @ManyToOne
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -75,21 +78,22 @@ public class User extends AbsEntity implements UserDetails {
         return enabled;
     }
 
-    public User(String name, String lastName, String phoneNumber, String password, Role role, Colors colors) {
+    public User(String name, String lastName, String phoneNumber, String password, Role role, Colors colors, Savatcha savatchas) {
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
         this.colors = colors;
+        this.savatchas = savatchas;
     }
 
-    public User(String name, String lastName, String phoneNumber, String password, Role role) {
+    public User(String name, String lastName, String phoneNumber, String password, Role role, Savatcha savatchas) {
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
-
+        this.savatchas = savatchas;
     }
 }

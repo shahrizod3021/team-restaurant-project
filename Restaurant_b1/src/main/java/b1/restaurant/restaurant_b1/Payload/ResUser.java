@@ -1,5 +1,6 @@
 package b1.restaurant.restaurant_b1.Payload;
 
+import b1.restaurant.restaurant_b1.Entity.Savatcha;
 import b1.restaurant.restaurant_b1.Entity.Zakaz;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,5 @@ public class ResUser {
     private String password;
     private UUID photoId;
     private List<Zakaz> zakazList = new ArrayList<>();
+    private Savatcha savatcha;
 }

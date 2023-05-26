@@ -24,6 +24,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
     private final AuthRepository authRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -41,7 +42,7 @@ public class AuthController {
         User user = authRepository.findUserByPhoneNumber(request.getPhoneNumber()).get();
         ResToken resToken = new ResToken(generateToken(request.getPhoneNumber()));
         if (user.getRole().getRoleName().equals(RoleName.USER)) {
-            return ResponseEntity.ok(getmalumot(user, resToken, "/foydalanuvchi"));
+            return ResponseEntity.ok(getmalumot(user, resToken, "/auth/user"));
         }
         return ResponseEntity.ok(getmalumot(user, resToken, "/auth/admin"));
     }
@@ -66,7 +67,7 @@ public class AuthController {
         User user = authRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("getUser"));
         user.setPhotoId(photoId);
         authRepository.save(user);
-        return ResponseEntity.ok(new ApiResponse("malladess", true));
+        return ResponseEntity.ok(new ApiResponse("taxrirlandi", true));
     }
 
 

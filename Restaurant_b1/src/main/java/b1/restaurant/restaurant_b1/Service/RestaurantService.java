@@ -48,13 +48,13 @@ public class RestaurantService {
                 .id(restaurant.getId())
                 .name(restaurant.getName())
                 .allProfit(restaurant.getProfit())
-                .dailyProfit(kechagiFoyda)
+                .dailyProfit(kunlikFoyda)
                 .userSize(restaurant.getUserSize().size())
                 .monthlyProfit(oylikFoyda)
                 .foydaFoiz(Math.round(v5))
                 .zarazFoyiz(Math.round(v4))
-                .kunlikFoydaFoiz(v7)
-                .kunlikZararFoiz(v6)
+                .kunlikFoydaFoiz(kechagiFoyda != 0 ? Math.round(v7) : kunlikFoyda)
+                .kunlikZararFoiz(Math.round(v6))
                 .build();
     }
 
@@ -63,7 +63,9 @@ public class RestaurantService {
         Date date = new Date();
         for (Zakaz zakaz : zakazRepository.findAll()) {
             if (zakaz.getDate().getDate() == date.getDate()) {
-                dailyAllProfit = dailyAllProfit + zakaz.getAllPrice();
+                if (zakaz.isDelivered()) {
+                    dailyAllProfit = dailyAllProfit + zakaz.getAllPrice();
+                }
             }
         }
         return dailyAllProfit;
@@ -74,7 +76,9 @@ public class RestaurantService {
         Date date = new Date();
         for (Zakaz zakaz : zakazRepository.findAll()) {
             if (zakaz.getDate().getDate() == date.getDate() - 1) {
-                pastDayProfit = pastDayProfit + zakaz.getAllPrice();
+                if (zakaz.isDelivered()) {
+                    pastDayProfit = pastDayProfit + zakaz.getAllPrice();
+                }
             }
         }
         return pastDayProfit;
@@ -104,6 +108,6 @@ public class RestaurantService {
                 }
             }
         }
-        return pastProfit;
+        return 100000;
     }
 }
