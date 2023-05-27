@@ -10,6 +10,6 @@ import 'react-multi-carousel/lib/styles.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App/>
-      <ToastContainer/>
+      <ToastContainer draggable/>
   </React.StrictMode>,
 )
